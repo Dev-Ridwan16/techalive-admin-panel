@@ -1,6 +1,9 @@
 import { useState } from "react";
-import "./App.css";
 import { AccountForm } from "./components/AccountForm";
+
+// styles
+import "primeicons/primeicons.css";
+import "./App.css";
 
 function App() {
   return (

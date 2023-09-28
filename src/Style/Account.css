@@ -1,0 +1,55 @@
+.acc-container {
+    @apply w-[50%] mx-auto
+}
+
+.acc-container .brand {
+    @apply flex flex-col items-center justify-center
+}
+
+.acc-container .brand img {
+    @apply w-[60px] h-[60px]
+}
+
+.acc-container .brand h1 {
+    @apply text-f25
+}
+
+.acc-container .form {
+    @apply flex flex-col items-center mt-10
+}
+
+.acc-container .form h1 {
+    @apply text-f16 mb-3
+}
+
+.acc-container .form p {
+    @apply mb-5
+}
+
+.acc-container .form form {
+    @apply flex flex-col items-center justify-center
+}
+
+.acc-container .form form input {
+    @apply outline-none border mt-3 w-[250px] rounded-sm px-3 py-2
+}
+
+.acc-container .form form .password {
+    @apply relative
+}
+
+.acc-container .form form .password i {
+    @apply absolute top-[60%] left-[100%] translate-x-[-150%] translate-y-[-45%] cursor-pointer
+}
+
+.acc-container .form form button {
+    @apply bg-pink text-[#fff] w-[250px] h-[35px] mt-5 rounded
+}
+
+.acc-container .form .foot {
+    @apply flex flex-row mt-5 justify-between w-[250px] 
+}
+
+.acc-container .form .foot div {
+    @apply text-pink
+}
