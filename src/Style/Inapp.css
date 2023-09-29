@@ -1,0 +1,38 @@
+/* Side bar styles */
+
+.sidebar-container {
+    @apply w-[250px] border-r h-screen flex flex-col
+}
+
+.sidebar-container .header {
+    @apply h-[50px] pl-5 pt-5
+}
+
+.sidebar-container .header img {
+    @apply w-[45px] h-[45px]
+}
+
+.sidebar-container .links {
+    @apply flex flex-col mx-5 mt-10
+}
+
+.sidebar-container .links .nav-links {
+@apply mt-5 flex items-center gap-3 h-[40px] px-2 rounded-md 
+}
+
+.sidebar-container .links .nav-links.active {
+    @apply bg-grey bg-opacity-10 transition-all duration-700 ease-in-out
+}
+
+.sidebar-container .links .nav-links i {
+    @apply text-f16
+}
+
+.sidebar-container .logout-btn {
+    @apply max-w-[200px] mx-auto mt-[50px] 
+}
+
+.sidebar-container .logout-btn button {
+    @apply w-[200px] h-[40px] bg-red text-[#fff] rounded flex items-center justify-center gap-3
+}
+

@@ -26,7 +26,7 @@ export default {
       colors: {
         pink: "#FF046E",
         blue: "#081325",
-        red: "#800000",
+        red: "#ee4646",
         grey: "#6c6c6c",
       },
     },

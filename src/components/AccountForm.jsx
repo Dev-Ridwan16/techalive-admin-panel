@@ -14,7 +14,7 @@ export const AccountForm = () => {
     <div>
       <Routes>
         <Route
-          path="signup"
+          path="/"
           element={
             <SignupComp
               isToggle={isToggle}
