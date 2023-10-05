@@ -36,3 +36,8 @@
     @apply w-[200px] h-[40px] bg-red text-[#fff] rounded flex items-center justify-center gap-3
 }
 
+
+/* Board */
+.board-header {
+    @apply text-grey text-f20 mb-10
+}

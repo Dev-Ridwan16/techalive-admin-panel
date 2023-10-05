@@ -30,3 +30,25 @@ export const sidebar_links = [
     icon: "pi-cog",
   },
 ];
+
+export const overview_total = [
+  {
+    _for: "Products",
+    _total: 63,
+  },
+
+  {
+    _for: "Blogs",
+    _total: 12,
+  },
+
+  {
+    _for: "Appointments",
+    _total: 4,
+  },
+
+  {
+    _for: "Reviews",
+    _total: 8,
+  },
+];
