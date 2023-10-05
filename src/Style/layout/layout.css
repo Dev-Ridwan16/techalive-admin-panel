@@ -1,0 +1,9 @@
+
+.notification {
+  @apply fixed z-[999] top-10 left-10 transition-all duration-500 ease-in-out w-[0px] h-[70px] overflow-hidden;
+}
+
+.notification.slide-show {
+    @apply w-[300px] 
+}
+

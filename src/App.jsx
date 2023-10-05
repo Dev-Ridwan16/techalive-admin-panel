@@ -14,14 +14,42 @@ import {
   Reviews,
   Settings,
 } from "./components/Inapp/Board";
+import { Notifications } from "./layouts/Notifications";
+
+import { SignupComp } from "./components/AccountForm";
+import { LoginComp } from "./components/AccountForm";
 
 function App() {
+  const [isToggle, setIsToggle] = useState(true);
+
+  const handleIsToggle = () => {
+    setIsToggle(!isToggle);
+  };
   return (
     <>
+      <Notifications />
       <Routes>
         <Route
           path="/"
           element={<AccountForm />}
+        />
+        <Route
+          path="signup"
+          element={
+            <SignupComp
+              isToggle={isToggle}
+              handleIsToggle={handleIsToggle}
+            />
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <LoginComp
+              isToggle={isToggle}
+              handleIsToggle={handleIsToggle}
+            />
+          }
         />
         <Route
           path="admin-panel"
