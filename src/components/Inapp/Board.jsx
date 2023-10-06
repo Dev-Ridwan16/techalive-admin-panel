@@ -70,11 +70,15 @@ export const Overview = () => {
 };
 
 export const Products = function () {
+  const isTablet = window.innerWidth >= 768;
   const navigate = useNavigate();
   const [pathnameChange, setPathnameChange] = useState(true);
   const [searchProduct, setSearchProduct] = useState("");
 
   const [productData, setProductData] = useState([]);
+
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.loading);
 
   const handleNavigate = function () {
     navigate("/admin-panel/products/add-new-product");
@@ -86,18 +90,46 @@ export const Products = function () {
 
     // const filterProduct =
   };
+
+  useEffect(() => {
+    const getProducts = async () => {
+      dispatch(setLoading(true));
+      try {
+        const response = await axios.get(
+          "https://techalive.onrender.com/api/v1/product/all-products"
+        );
+        const { data } = response.data;
+        setProductData(data.products);
+        switch (response.status) {
+          case 200:
+            dispatch(setLoading(false));
+        }
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    };
+
+    getProducts();
+  }, []);
   return (
     <div>
       <h1 className="board-header">Products</h1>
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center gap-3 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+          <i className="pi pi-spin pi-spinner" />
+          <span>Loading...</span>
+        </div>
+      ) : null}
+
       <div className="">
         <div className="toggle-board">
           {location.pathname === "/admin-panel/products" ? (
             <div className="flex flex-row item-center justify-between">
               <button
-                className={`w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
+                className={`w-[50px] md:w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
                 onClick={handleNavigate}
               >
-                Add New Product +
+                {isTablet ? "Add New Product +" : "+"}
               </button>
 
               <input
@@ -105,13 +137,13 @@ export const Products = function () {
                 value={searchProduct}
                 onChange={handleSearchChange}
                 placeholder="Search for product..."
-                className="outline-none border rounded-full w-[250px] h-[25px] px-3 text-f10"
+                className="outline-none border rounded-full w-[150px] md:w-[250px] h-[25px] px-3 text-f10"
               />
 
               <div className="flex items-center gap-2">
                 <i className="pi pi-circle-fill text-green-500"></i>
                 <span>Total Products:</span>
-                <span className="text-f16">64</span>
+                <span className="text-f16">{productData.length}</span>
               </div>
             </div>
           ) : null}
@@ -134,8 +166,26 @@ export const Products = function () {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
+            {productData.map((product, index) => (
+              <tr key={index}>
+                <td>Image</td>
+                <td>{product.name}</td>
+                <td>{product.category}</td>
+                <td>$ {product.price}</td>
+                <td>{product.description}</td>
+                <td>
+                  <ul className="flex items-center justify-center gap-5">
+                    <li>
+                      <i className="pi pi-pencil text-green-600"></i>
+                    </li>
+                    <li>
+                      <i className="pi pi-trash text-red"></i>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            ))}
+            {/* <td>
                 <i className="pi pi-facebook"></i>
               </td>
               <td>Facebook</td>
@@ -151,8 +201,7 @@ export const Products = function () {
                     <i className="pi pi-trash text-red"></i>
                   </li>
                 </ul>
-              </td>
-            </tr>
+              </td> */}
           </tbody>
         </table>
       </div>
