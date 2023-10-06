@@ -9,8 +9,8 @@ export const AdminPanel = () => {
       <div className="flex flex-col w-full">
         <Headbar />
         <Board />
-        <BottomNav />
       </div>
+      <BottomNav />
     </div>
   );
 };

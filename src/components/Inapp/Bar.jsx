@@ -78,7 +78,7 @@ export const BottomNav = () => {
   };
 
   return (
-    <div className="flex md:hidden items-end justify-end h-[75vh] sticky bottom-0">
+    <div className="flex md:hidden items-end justify-end fixed w-full bottom-0">
       <div className="bottom-nav">
         {sidebar_links.map((link, index) => (
           <div
