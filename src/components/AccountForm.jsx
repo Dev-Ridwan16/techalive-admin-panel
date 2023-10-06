@@ -253,27 +253,6 @@ export const SignupComp = ({ isToggle, handleIsToggle }) => {
               </div>
             </div>
           ))}
-          {/* <div className="password">
-            <div className="flex flex-col">
-              <input
-                type={isToggle ? "password" : "text"}
-                placeholder="Create password"
-                name="password"
-                value={userDetails.password}
-                onChange={handleUserDetailsChange}
-              />
-            </div>
-            <div
-              className="showToggle"
-              onClick={handleIsToggle}
-            >
-              {isToggle ? (
-                <i className="pi pi-eye"></i>
-              ) : (
-                <i className="pi pi-eye-slash"></i>
-              )}
-            </div>
-          </div> */}
 
           <button
             type="submit"
@@ -294,8 +273,134 @@ export const SignupComp = ({ isToggle, handleIsToggle }) => {
 };
 
 export const LoginComp = ({ isToggle, handleIsToggle }) => {
+  const [loginDetails, setLoginDetails] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [fieldErrors, setFieldErrors] = useState({
+    email: "",
+    password: "",
+  });
+  const [status, setStatus] = useState("");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showNotification, setShowNotification] = useState(false);
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.loading);
+
+  const handleLoginDetailsChange = function (event) {
+    const { name, value } = event.target;
+
+    setLoginDetails({ ...loginDetails, [name]: value });
+
+    setFieldErrors({
+      ...fieldErrors,
+      [name]:
+        value === ""
+          ? `${name.charAt(0).toUpperCase() + name.slice(1)} is required.`
+          : "",
+    });
+  };
+
+  // Check connection
+  useEffect(() => {
+    const handleOnlineStatusChange = () => {
+      setIsOnline(true);
+    };
+
+    const handleOfflineStatusChange = () => {
+      setIsOnline(false);
+    };
+
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOfflineStatusChange);
+
+    return () => {
+      window.removeEventListener("online", handleOnlineStatusChange);
+      window.removeEventListener("offline", handleOfflineStatusChange);
+    };
+  });
+
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    Object.entries(loginDetails).forEach(([fieldName, fieldValue]) => {
+      if (fieldValue.trim() === "") {
+        newErrors[fieldName] = `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required.`;
+        isValid = false;
+      }
+    });
+
+    setFieldErrors(newErrors);
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      dispatch(setLoading(true));
+      try {
+        const response = await axios.post(
+          "https://techalive.onrender.com/api/v1/user/login",
+          loginDetails
+        );
+
+        switch (response.status) {
+          case 200:
+            setShowNotification(true);
+            setStatus("success");
+            dispatch(setLoading(false));
+            setTimeout(() => {
+              navigate("/admin-panel/overview");
+            }, 5000);
+            break;
+          case 500:
+            setShowNotification(true);
+            setStatus("danger");
+            break;
+          default:
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          setStatus("warning");
+          setShowNotification(true);
+          dispatch(setLoading(false));
+          dispatch(setError(true));
+        } else {
+          setStatus("danger");
+          !isOnline ? setStatus("offline") : null;
+
+          setShowNotification(true);
+          dispatch(setLoading(false));
+          dispatch(setError(true));
+        }
+        console.log(err);
+      } finally {
+        dispatch(setLoading(false));
+      }
+    }
+  };
+
+  useEffect(() => {
+    const interver = setInterval(() => {
+      setShowNotification(false);
+    }, 5000);
+
+    return () => clearInterval(interver);
+  }, [status]);
+
   return (
     <div className="acc-container">
+      <Notifications
+        status={status}
+        showNotification={showNotification}
+      />
       <div className="brand">
         <img
           src="https://i.imgur.com/UKGl5Qk.png"
@@ -305,30 +410,55 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
       </div>
       <div className="form">
         <h1>Login your account</h1>
-        <form>
-          <input
-            type="email"
-            placeholder="Email address"
-            name=""
-          />
-          <div className="password">
-            <input
-              type={isToggle ? "password" : "text"}
-              placeholder="Your password"
-              name=""
-            />
+        <form onSubmit={handleSubmit}>
+          {Object.keys(loginDetails).map((fieldName) => (
             <div
-              className="showToggle"
-              onClick={handleIsToggle}
+              key={fieldName}
+              className={fieldName === "password" ? "password" : ""}
             >
-              {isToggle ? (
-                <i className="pi pi-eye"></i>
-              ) : (
-                <i className="pi pi-eye-slash"></i>
+              <input
+                type={
+                  fieldName === "password" && isToggle
+                    ? "password"
+                    : fieldName === "password"
+                    ? "paswword"
+                    : fieldName === "email"
+                    ? "email"
+                    : "text"
+                }
+                placeholder={`${fieldName === "password" ? "Your" : ""} ${
+                  fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+                } ${fieldName === "email" ? "address" : ""} `}
+                name={fieldName}
+                value={loginDetails[fieldName]}
+                onChange={handleLoginDetailsChange}
+              />
+              {fieldName === "password" && (
+                <div
+                  className="showToggle"
+                  onClick={handleIsToggle}
+                >
+                  {isToggle ? (
+                    <i className="pi pi-eye"></i>
+                  ) : (
+                    <i className="pi pi-eye-slash"></i>
+                  )}
+                </div>
               )}
+              <div className="text-f10 text-red mt-[0.5px]">
+                {fieldErrors[fieldName] && (
+                  <div className="error">{fieldErrors[fieldName]}</div>
+                )}
+              </div>
             </div>
-          </div>
-          <button type="submit">Login</button>
+          ))}
+          <button
+            type="submit"
+            disabled={isLoading ? true : false}
+          >
+            <span>{` ${!isLoading ? "Login" : "Please wait"}`}</span>
+            {isLoading && <i className="pi pi-spin pi-spinner text-f12 ml-3" />}
+          </button>
         </form>
         <div className="foot">
           <div>
