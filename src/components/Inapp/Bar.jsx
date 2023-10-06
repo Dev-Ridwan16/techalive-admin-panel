@@ -86,7 +86,9 @@ export const BottomNav = () => {
             className={`nav-links ${index === active ? "active" : ""}`}
             onClick={() => handleActive(index)}
           >
-            <i className={`pi ${link.icon} text-f20`}></i>
+            <Link to={link.path}>
+              <i className={`pi ${link.icon} text-f20`}></i>
+            </Link>
           </div>
         ))}
       </div>

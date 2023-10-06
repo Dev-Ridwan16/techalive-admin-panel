@@ -78,7 +78,7 @@ export const Products = function () {
         <div className="toggle-board">
           <button
             className={`${
-              pathnameChange ? "hidden" : "block"
+              pathnameChange ? "block" : "hidden"
             } w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
             onClick={handleNavigate}
           >
