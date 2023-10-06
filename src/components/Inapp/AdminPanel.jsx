@@ -1,5 +1,5 @@
 import React from "react";
-import { Headbar, Sidebar } from "./Bar";
+import { BottomNav, Headbar, Sidebar } from "./Bar";
 import { Board } from "./Board";
 
 export const AdminPanel = () => {
@@ -9,6 +9,7 @@ export const AdminPanel = () => {
       <div className="flex flex-col w-full">
         <Headbar />
         <Board />
+        <BottomNav />
       </div>
     </div>
   );

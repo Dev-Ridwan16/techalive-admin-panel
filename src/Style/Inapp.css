@@ -1,11 +1,11 @@
 /* Side bar styles */
 
 .sidebar-container {
-    @apply w-[250px] border-r h-screen flex flex-col
+    @apply hidden md:w-[150px] lg:w-[250px] border-r h-screen md:flex flex-col
 }
 
 .sidebar-container .header {
-    @apply h-[50px] pl-5 pt-5
+    @apply h-[50px] px-5 pt-5
 }
 
 .sidebar-container .header img {
@@ -17,7 +17,7 @@
 }
 
 .sidebar-container .links .nav-links {
-@apply mt-5 flex items-center gap-3 h-[40px] px-2 rounded-md 
+@apply mt-5 flex items-center md:justify-center lg:justify-start gap-3 h-[40px] px-2 rounded-md 
 }
 
 .sidebar-container .links .nav-links.active {
@@ -33,11 +33,47 @@
 }
 
 .sidebar-container .logout-btn button {
-    @apply w-[200px] h-[40px] bg-red text-[#fff] rounded flex items-center justify-center gap-3
+    @apply md:w-[50px] lg:w-[200px] h-[40px] bg-red text-[#fff] rounded flex items-center justify-center gap-3
+}
+
+.bottom-nav {
+    @apply flex flex-row items-center justify-between sticky w-[90%] mx-auto left-0 bg-grey bg-opacity-5 h-[60px] px-3 rounded-xl
 }
 
 
 /* Board */
 .board-header {
-    @apply text-grey text-f20 mb-10
+    @apply text-grey text-f20 mb-8
+}
+
+.custom-image{
+    filter:opacity(60%);
+    height: 25px;
+    width: 20px;
+}
+
+.product-infomation::-webkit-scrollbar, .preview::-webkit-scrollbar {
+    @apply w-[2px] 
+}
+
+.product-infomation::-webkit-scrollbar-thumb, .preview::-webkit-scrollbar-thumb {
+    @apply bg-grey bg-opacity-20 rounded-full 
+}
+
+.product-infomation, .preview {
+    @apply w-[100%] lg:w-[50%] h-[380px] border overflow-y-scroll py-3
+}
+
+.product-infomation .product-information-wrapper {
+    @apply max-w-[85%] md:max-w-[75%] mx-auto
+}
+
+.product-infomation .product-information-wrapper div.text-details div form div input, 
+.product-infomation .product-information-wrapper div.text-details div form div select, 
+.product-infomation .product-information-wrapper div.text-details div form div textarea  {
+    @apply border outline-none h-[30px] w-[300px] md:w-[400px] px-3 rounded-md
+}
+
+.preview-container {
+    @apply w-[300px] md:w-[400px] h-[200px] rounded-md border
 }

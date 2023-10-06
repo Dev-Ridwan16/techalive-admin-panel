@@ -7,6 +7,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { AdminPanel } from "./components/Inapp/AdminPanel";
 import {
+  AddProduct,
   Appointments,
   Blogs,
   Overview,
@@ -62,7 +63,12 @@ function App() {
           <Route
             path="products"
             element={<Products />}
-          />
+          >
+            <Route
+              path="add-new-product"
+              element={<AddProduct />}
+            />
+          </Route>
           <Route
             path="blogs"
             element={<Blogs />}
