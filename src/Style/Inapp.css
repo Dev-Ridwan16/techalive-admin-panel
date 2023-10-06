@@ -61,7 +61,7 @@
 }
 
 .product-infomation, .preview {
-    @apply w-[100%] lg:w-[50%] h-[380px] border overflow-y-scroll py-3
+    @apply w-[100%] lg:w-[50%] h-[350px] border overflow-y-scroll py-3
 }
 
 .product-infomation .product-information-wrapper {

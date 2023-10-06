@@ -66,24 +66,48 @@ export const Overview = () => {
 export const Products = function () {
   const navigate = useNavigate();
   const [pathnameChange, setPathnameChange] = useState(true);
+  const [searchProduct, setSearchProduct] = useState("");
+
+  const [productData, setProductData] = useState([]);
 
   const handleNavigate = function () {
     navigate("/admin-panel/products/add-new-product");
     setPathnameChange(false);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchProduct(e.target.value);
+
+    // const filterProduct =
   };
   return (
     <div>
       <h1 className="board-header">Products</h1>
       <div className="">
         <div className="toggle-board">
-          <button
-            className={`${
-              pathnameChange ? "block" : "hidden"
-            } w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
-            onClick={handleNavigate}
-          >
-            Add New Product +
-          </button>
+          {location.pathname === "/admin-panel/products" ? (
+            <div className="flex flex-row item-center justify-between">
+              <button
+                className={`w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
+                onClick={handleNavigate}
+              >
+                Add New Product +
+              </button>
+
+              <input
+                type="search"
+                value={searchProduct}
+                onChange={handleSearchChange}
+                className="outline-none border rounded-full w-[250px] h-[25px] px-3"
+              />
+
+              <div className="flex items-center gap-2">
+                <i className="pi pi-circle-fill text-green-500"></i>
+                <span>Total Products:</span>
+                <span className="text-f16">64</span>
+              </div>
+            </div>
+          ) : null}
           <Routes>
             <Route
               path="add-new-product"
@@ -91,6 +115,39 @@ export const Products = function () {
             />
           </Routes>
         </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <i className="pi pi-facebook"></i>
+              </td>
+              <td>Facebook</td>
+              <td>Computer</td>
+              <td>$500</td>
+              <td>Lorem ipsum, ...</td>
+              <td>
+                <ul className="flex items-center justify-center gap-5">
+                  <li>
+                    <i className="pi pi-pencil text-green-600"></i>
+                  </li>
+                  <li>
+                    <i className="pi pi-trash text-red"></i>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -187,7 +244,7 @@ export const AddProduct = () => {
                         {fieldName === "name" || fieldName === "price" ? (
                           <input
                             name={fieldName}
-                            type="text"
+                            type={fieldName === "price" ? "number" : "text"}
                             value={productDetails[fieldName]}
                             placeholder={`Product ${
                               fieldName.charAt(0).toUpperCase() +
@@ -220,12 +277,11 @@ export const AddProduct = () => {
                             >
                               Select category
                             </option>
-                            <option value="computer">Computer</option>
-                            <option value="smartphones">Smartphones</option>
-                            <option value="gadgets">Gadgets</option>
-                            <option value="accessories">
-                              Accessories
-                            </option>{" "}
+                            <option value="Accessories">Accessories</option>
+                            <option value="Computer">Computer</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Gadgets">Gadgets</option>
+                            <option value="Smartphones">Smartphones</option>
                           </select>
                         )}
 
@@ -256,8 +312,12 @@ export const AddProduct = () => {
                       : "$" + productDetails.price
                   }`}
                 </h3>
-
-                <p className="mt-3">{productDetails.description}</p>
+                <div
+                  className="mt-3 w-[400px] min-h-[150px] max-h-[150px] h-[150px] overflow-y-scroll border rounded-md"
+                  style={{ wordWrap: "break-word" }}
+                >
+                  {productDetails.description}
+                </div>
               </div>
             </div>
           </div>
