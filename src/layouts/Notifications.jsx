@@ -9,8 +9,8 @@ export const Notifications = ({ status, showNotification }) => {
     notification_message = "Account created successfully";
   } else if (location.pathname === "/login") {
     notification_message = "Login successfully";
-  } else if (location.pathname === "/admin-panel/products") {
-    notification_message = "Added";
+  } else if (location.pathname === "/admin-panel/products/add-new-product") {
+    notification_message = "Product added successfully";
   } else if (location.pathname === "admin-panel/blogs") {
     notification_message = "Your blog has been posted";
   }

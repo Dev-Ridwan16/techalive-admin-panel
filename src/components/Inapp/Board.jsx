@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { overview_total } from "../../../default-api";
 
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../features/loadingSlice";
+
 import AddImage from "../../assets/add-image.png";
+import axios from "axios";
+
+import { Notifications } from "../../layouts/Notifications";
 
 export const Board = () => {
   return (
@@ -98,7 +104,8 @@ export const Products = function () {
                 type="search"
                 value={searchProduct}
                 onChange={handleSearchChange}
-                className="outline-none border rounded-full w-[250px] h-[25px] px-3"
+                placeholder="Search for product..."
+                className="outline-none border rounded-full w-[250px] h-[25px] px-3 text-f10"
               />
 
               <div className="flex items-center gap-2">
@@ -168,6 +175,13 @@ export const AddProduct = () => {
     category: "",
   });
 
+  const [status, setStatus] = useState("");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showNotification, setShowNotification] = useState(false);
+
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.loading);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -180,6 +194,25 @@ export const AddProduct = () => {
           : "",
     });
   };
+
+  // Check connection
+  useEffect(() => {
+    const handleOnlineStatusChange = () => {
+      setIsOnline(true);
+    };
+
+    const handleOfflineStatusChange = () => {
+      setIsOnline(false);
+    };
+
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOfflineStatusChange);
+
+    return () => {
+      window.removeEventListener("online", handleOnlineStatusChange);
+      window.removeEventListener("offline", handleOfflineStatusChange);
+    };
+  });
 
   const validateForm = function () {
     const newErrors = {};
@@ -199,15 +232,49 @@ export const AddProduct = () => {
     return isValid;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (validateForm()) {
-      console.log(productDetails);
-    } else {
-      return;
+      dispatch(setLoading(true));
+      try {
+        const response = await axios.post(
+          "https://techalive.onrender.com/api/v1/product/add-product",
+          productDetails
+        );
+
+        switch (response.status) {
+          case 201:
+            setShowNotification(true);
+            setStatus("success");
+            dispatch(setLoading(false));
+            setProductDetails({
+              name: "",
+              price: "",
+              category: "",
+              description: "",
+            });
+            break;
+        }
+      } catch {}
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(function () {
+      setShowNotification(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [status]);
   return (
     <div className="">
+      <div className="float-right">
+        <Notifications
+          status={status}
+          showNotification={showNotification}
+        />
+      </div>
       <div className="adding-product">
         <div className="flex items-center justify-between">
           <h3 className="text-grey text-f16 font-bodyFamily">
@@ -218,7 +285,10 @@ export const AddProduct = () => {
             className=" bg-green-700 text-[#fff] w-[150px] h-[40px] rounded-md "
             onClick={handleSubmit}
           >
-            Add Product
+            {`${isLoading ? "Adding" : "Add Product"}`}
+            {isLoading && (
+              <i className="pi pi-spin pi-spinner text-f12 ml-3"></i>
+            )}
           </button>
         </div>
         {/* Details and Preview */}
