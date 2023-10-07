@@ -69,6 +69,16 @@ export const Overview = () => {
   );
 };
 
+const formatDate = (dateString) => {
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    weekday: "short",
+  };
+  return new Date(dateString).toLocaleDateString("en-US", options);
+};
+
 export const Products = function () {
   const isTablet = window.innerWidth >= 768;
   const navigate = useNavigate();
@@ -76,9 +86,12 @@ export const Products = function () {
   const [searchProduct, setSearchProduct] = useState("");
 
   const [productData, setProductData] = useState([]);
+  const [pollingInterval, setPollingInterval] = useState(5000);
 
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.loading);
+  // Loading for manual functions
+  const [mLoad, setMLoad] = useState(false);
 
   const handleNavigate = function () {
     navigate("/admin-panel/products/add-new-product");
@@ -91,6 +104,7 @@ export const Products = function () {
     // const filterProduct =
   };
 
+  // get all products
   useEffect(() => {
     const getProducts = async () => {
       dispatch(setLoading(true));
@@ -100,21 +114,49 @@ export const Products = function () {
         );
         const { data } = response.data;
         setProductData(data.products);
+        setDate();
         switch (response.status) {
           case 200:
             dispatch(setLoading(false));
         }
+        setDate(newDate.toLocaleDateString("en-US", options));
       } catch (error) {
         console.log("Error:", error);
+      } finally {
+        dispatch(setLoading(false));
       }
     };
 
-    getProducts();
-  }, []);
+    // getProducts();
+
+    const interval = setInterval(getProducts, pollingInterval);
+
+    return () => clearInterval(interval);
+  }, [pollingInterval]);
+
+  const handleDeleteAllProduct = async () => {
+    setMLoad(true);
+    try {
+      const result = await axios.delete(
+        "https://techalive.onrender.com/api/v1/product/delete-products"
+      );
+
+      const { data } = result.data;
+
+      setProductData(data.products);
+      setMLoad(false);
+    } catch (error) {
+      console.log("Error", error);
+      dispatch(setLoading(false));
+    } finally {
+      setMLoad(false);
+    }
+  };
+
   return (
     <div>
       <h1 className="board-header">Products</h1>
-      {isLoading ? (
+      {location.pathname !== "/admin-panel/products" ? null : isLoading ? (
         <div className="flex flex-col items-center justify-center gap-3 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
           <i className="pi pi-spin pi-spinner" />
           <span>Loading...</span>
@@ -124,27 +166,75 @@ export const Products = function () {
       <div className="">
         <div className="toggle-board">
           {location.pathname === "/admin-panel/products" ? (
-            <div className="flex flex-row item-center justify-between">
-              <button
-                className={`w-[50px] md:w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
-                onClick={handleNavigate}
-              >
-                {isTablet ? "Add New Product +" : "+"}
-              </button>
+            <div>
+              <div className="flex flex-row item-center justify-between">
+                <button
+                  className={`w-[50px] md:w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
+                  onClick={handleNavigate}
+                >
+                  {isTablet ? "Add New Product +" : "+"}
+                </button>
 
-              <input
-                type="search"
-                value={searchProduct}
-                onChange={handleSearchChange}
-                placeholder="Search for product..."
-                className="outline-none border rounded-full w-[150px] md:w-[250px] h-[25px] px-3 text-f10"
-              />
+                <input
+                  type="search"
+                  value={searchProduct}
+                  onChange={handleSearchChange}
+                  placeholder="Search for product..."
+                  className="outline-none border rounded-full w-[150px] md:w-[250px] h-[25px] px-3 text-f10"
+                />
 
-              <div className="flex items-center gap-2">
-                <i className="pi pi-circle-fill text-green-500"></i>
-                <span>Total Products:</span>
-                <span className="text-f16">{productData.length}</span>
+                <div className="flex items-center gap-2">
+                  <i className="pi pi-circle-fill text-green-500"></i>
+                  <span>Total Products:</span>
+                  <span className="text-f16">{productData.length}</span>
+                </div>
               </div>
+              <div>
+                <button
+                  onClick={handleDeleteAllProduct}
+                  className="bg-red text-[#fff] w-[100px] h-[30px] mt-5 flex gap-2 items-center justify-center rounded"
+                >
+                  <span>{mLoad ? "Deleting..." : "Delete All"}</span>
+                  <i
+                    className={mLoad ? "pi pi-spin pi-spinner" : "pi pi-trash"}
+                  ></i>
+                </button>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Date added</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productData.map((product, index) => (
+                    <tr key={index}>
+                      <td>Image</td>
+                      <td>{product.name}</td>
+                      <td>{product.category}</td>
+                      <td>$ {product.price}</td>
+                      <td>{product.description}</td>
+                      <td>{formatDate(product.date)}</td>
+                      <td>
+                        <ul className="flex items-center justify-center gap-5">
+                          <li>
+                            <i className="pi pi-pencil text-green-600"></i>
+                          </li>
+                          <li>
+                            <i className="pi pi-trash text-red"></i>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : null}
           <Routes>
@@ -154,56 +244,6 @@ export const Products = function () {
             />
           </Routes>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Description</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productData.map((product, index) => (
-              <tr key={index}>
-                <td>Image</td>
-                <td>{product.name}</td>
-                <td>{product.category}</td>
-                <td>$ {product.price}</td>
-                <td>{product.description}</td>
-                <td>
-                  <ul className="flex items-center justify-center gap-5">
-                    <li>
-                      <i className="pi pi-pencil text-green-600"></i>
-                    </li>
-                    <li>
-                      <i className="pi pi-trash text-red"></i>
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-            ))}
-            {/* <td>
-                <i className="pi pi-facebook"></i>
-              </td>
-              <td>Facebook</td>
-              <td>Computer</td>
-              <td>$500</td>
-              <td>Lorem ipsum, ...</td>
-              <td>
-                <ul className="flex items-center justify-center gap-5">
-                  <li>
-                    <i className="pi pi-pencil text-green-600"></i>
-                  </li>
-                  <li>
-                    <i className="pi pi-trash text-red"></i>
-                  </li>
-                </ul>
-              </td> */}
-          </tbody>
-        </table>
       </div>
     </div>
   );
@@ -228,8 +268,7 @@ export const AddProduct = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showNotification, setShowNotification] = useState(false);
 
-  const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.loading);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -283,9 +322,9 @@ export const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (validateForm()) {
-      dispatch(setLoading(true));
+      setIsLoading(true);
+
       try {
         const response = await axios.post(
           "https://techalive.onrender.com/api/v1/product/add-product",
@@ -296,7 +335,7 @@ export const AddProduct = () => {
           case 201:
             setShowNotification(true);
             setStatus("success");
-            dispatch(setLoading(false));
+            setIsLoading(false);
             setProductDetails({
               name: "",
               price: "",
@@ -305,7 +344,11 @@ export const AddProduct = () => {
             });
             break;
         }
-      } catch {}
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    } else {
+      setIsLoading(isLoading);
     }
   };
 
@@ -334,7 +377,7 @@ export const AddProduct = () => {
             className=" bg-green-700 text-[#fff] w-[150px] h-[40px] rounded-md "
             onClick={handleSubmit}
           >
-            {`${isLoading ? "Adding" : "Add Product"}`}
+            {`${!!isLoading ? "Adding" : "Add Product"}`}
             {isLoading && (
               <i className="pi pi-spin pi-spinner text-f12 ml-3"></i>
             )}
