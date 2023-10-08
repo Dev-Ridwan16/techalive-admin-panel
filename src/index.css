@@ -29,3 +29,7 @@ table tbody tr td {
 table tbody tr:nth-child(even) {
     @apply bg-grey bg-opacity-5
 }
+
+table tbody tr td ul {
+    @apply flex flex-col md:flex-row
+}

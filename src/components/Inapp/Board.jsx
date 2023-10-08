@@ -69,6 +69,7 @@ export const Overview = () => {
   );
 };
 
+// Date formatter javascript function
 const formatDate = (dateString) => {
   const options = {
     year: "numeric",
@@ -207,8 +208,8 @@ export const Products = function () {
                     <th>Name</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Description</th>
-                    <th>Date added</th>
+                    {isTablet ? <th>Description</th> : null}
+                    <th>Date</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -219,7 +220,15 @@ export const Products = function () {
                       <td>{product.name}</td>
                       <td>{product.category}</td>
                       <td>$ {product.price}</td>
-                      <td>{product.description}</td>
+
+                      {isTablet ? (
+                        <td>
+                          {product.description.length > 10
+                            ? product.description.slice(0, 10) + "..."
+                            : product.description}
+                        </td>
+                      ) : null}
+
                       <td>{formatDate(product.date)}</td>
                       <td>
                         <ul className="flex items-center justify-center gap-5">
