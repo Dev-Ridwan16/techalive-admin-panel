@@ -99,12 +99,6 @@ export const Products = function () {
     setPathnameChange(false);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchProduct(e.target.value);
-
-    // const filterProduct =
-  };
-
   // get all products
   useEffect(() => {
     const getProducts = async () => {
@@ -133,7 +127,7 @@ export const Products = function () {
     const interval = setInterval(getProducts, pollingInterval);
 
     return () => clearInterval(interval);
-  }, [pollingInterval]);
+  }, [productData]);
 
   const handleDeleteAllProduct = async () => {
     setMLoad(true);
@@ -179,7 +173,7 @@ export const Products = function () {
                 <input
                   type="search"
                   value={searchProduct}
-                  onChange={handleSearchChange}
+                  onChange={(e) => setSearchProduct(e.target.value)}
                   placeholder="Search for product..."
                   className="outline-none border rounded-full w-[150px] md:w-[250px] h-[25px] px-3 text-f10"
                 />
@@ -214,34 +208,42 @@ export const Products = function () {
                   </tr>
                 </thead>
                 <tbody>
-                  {productData.map((product, index) => (
-                    <tr key={index}>
-                      <td>Image</td>
-                      <td>{product.name}</td>
-                      <td>{product.category}</td>
-                      <td>$ {product.price}</td>
+                  {productData
+                    .filter((product) =>
+                      searchProduct.toLowerCase() === ""
+                        ? product
+                        : product.name
+                            .toLowerCase()
+                            .includes(searchProduct.toLowerCase())
+                    )
+                    .map((product, index) => (
+                      <tr key={index}>
+                        <td>Image</td>
+                        <td>{product.name}</td>
+                        <td>{product.category}</td>
+                        <td>$ {product.price}</td>
 
-                      {isTablet ? (
+                        {isTablet ? (
+                          <td>
+                            {product.description.length > 10
+                              ? product.description.slice(0, 10) + "..."
+                              : product.description}
+                          </td>
+                        ) : null}
+
+                        <td>{formatDate(product.date)}</td>
                         <td>
-                          {product.description.length > 10
-                            ? product.description.slice(0, 10) + "..."
-                            : product.description}
+                          <ul className="flex items-center justify-center gap-5">
+                            <li>
+                              <i className="pi pi-pencil text-green-600"></i>
+                            </li>
+                            <li>
+                              <i className="pi pi-trash text-red"></i>
+                            </li>
+                          </ul>
                         </td>
-                      ) : null}
-
-                      <td>{formatDate(product.date)}</td>
-                      <td>
-                        <ul className="flex items-center justify-center gap-5">
-                          <li>
-                            <i className="pi pi-pencil text-green-600"></i>
-                          </li>
-                          <li>
-                            <i className="pi pi-trash text-red"></i>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                  ))}
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
