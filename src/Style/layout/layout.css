@@ -7,3 +7,34 @@
     @apply w-[300px] 
 }
 
+.confirm-del-container {
+  @apply w-[250px] h-[150px] bg-[#fff] shadow-lg absolute z-[999] top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] p-3 rounded-md
+}
+
+.confirm-del-container .confirmation {
+  @apply relative
+}
+
+.confirm-del-container .confirmation h3{  
+  @apply text-red text-f16 pb-2
+}
+
+.confirm-del-container .confirmation p {
+  @apply py-3
+} 
+
+.confirm-del-container .confirmation .confirm-btns {
+  @apply flex flex-row justify-between items-center absolute w-full h-full
+}
+
+.confirm-del-container .confirmation .confirm-btns button {
+  @apply w-[80px] h-[30px] rounded-md
+}
+
+.confirm-del-container .confirmation .confirm-btns button:nth-child(1) {
+  @apply border 
+}
+
+.confirm-del-container .confirmation .confirm-btns button:nth-child(2) {
+  @apply bg-red text-[#fff]
+}
