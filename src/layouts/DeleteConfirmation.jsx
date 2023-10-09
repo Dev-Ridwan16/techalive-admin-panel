@@ -1,6 +1,23 @@
 import React from "react";
 
-export const DeleteConfirmation = () => {
+export const DeleteConfirmation = ({
+  closeConfirm,
+  handleDeleteAll,
+  deletingProgress,
+  mLoad,
+}) => {
+  let question;
+
+  switch (location.pathname) {
+    case "/admin-panel/products":
+      question = "delete all products";
+      break;
+    case "/admin-panel/blogs":
+      question = "delete all blogs";
+      break;
+    default:
+  }
+
   return (
     <div className="confirm-del-container">
       <div className="confirmation">
@@ -8,11 +25,13 @@ export const DeleteConfirmation = () => {
 
         <hr />
 
-        <p>Are you sure you want to delete?</p>
+        <p>Are you sure you want to {question}?</p>
 
         <div className="confirm-btns">
-          <button>Cancle</button>
-          <button>Delete</button>
+          <button onClick={closeConfirm}>Cancle</button>
+          <button onClick={handleDeleteAll}>
+            {mLoad ? `Deleting ${deletingProgress}%` : "Yes, Delete"}
+          </button>
         </div>
       </div>
     </div>

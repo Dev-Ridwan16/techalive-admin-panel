@@ -9,6 +9,7 @@ import AddImage from "../../assets/add-image.png";
 import axios from "axios";
 
 import { Notifications } from "../../layouts/Notifications";
+import { DeleteConfirmation } from "../../layouts/DeleteConfirmation";
 
 export const Board = () => {
   return (
@@ -84,15 +85,14 @@ export const Products = function () {
   const isTablet = window.innerWidth >= 768;
   const navigate = useNavigate();
   const [pathnameChange, setPathnameChange] = useState(true);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [mLoad, setMLoad] = useState(false); //For auto refresh
   const [searchProduct, setSearchProduct] = useState("");
-
   const [productData, setProductData] = useState([]);
   const [pollingInterval, setPollingInterval] = useState(5000);
-
+  const [deletingProgress, setDeletingProgress] = useState(0);
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.loading);
-  // Loading for manual functions
-  const [mLoad, setMLoad] = useState(false);
 
   const handleNavigate = function () {
     navigate("/admin-panel/products/add-new-product");
@@ -109,6 +109,7 @@ export const Products = function () {
         );
         const { data } = response.data;
         setProductData(data.products);
+
         setDate();
         switch (response.status) {
           case 200:
@@ -129,7 +130,7 @@ export const Products = function () {
     return () => clearInterval(interval);
   }, [productData]);
 
-  const handleDeleteAllProduct = async () => {
+  const handleDeleteAll = async () => {
     setMLoad(true);
     try {
       const result = await axios.delete(
@@ -137,6 +138,22 @@ export const Products = function () {
       );
 
       const { data } = result.data;
+
+      // Calculating and set deletion progress
+      const totalProducts = productData.length;
+      const deletedProducts = totalProducts - data.product.length;
+      let progress = 0;
+      const interValId = setInterval(() => {
+        if (progress < 100) {
+          progress += 1;
+          setDeletingProgress(progress);
+        } else {
+          clearInterval(interValId);
+        }
+      }, 50);
+      setTimeout(() => {
+        setDeletingProgress(100);
+      }, 5000);
 
       setProductData(data.products);
       setMLoad(false);
@@ -148,8 +165,21 @@ export const Products = function () {
     }
   };
 
+  const closeConfirm = function () {
+    setOpenConfirm(false);
+  };
+
   return (
     <div>
+      {openConfirm && (
+        <DeleteConfirmation
+          handleDeleteAll={handleDeleteAll}
+          closeConfirm={closeConfirm}
+          deletingProgress={deletingProgress}
+          mLoad={mLoad}
+        />
+      )}
+
       <h1 className="board-header">Products</h1>
       {location.pathname !== "/admin-panel/products" ? null : isLoading ? (
         <div className="flex flex-col items-center justify-center gap-3 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
@@ -186,13 +216,11 @@ export const Products = function () {
               </div>
               <div>
                 <button
-                  onClick={handleDeleteAllProduct}
+                  onClick={() => setOpenConfirm(true)}
                   className="bg-red text-[#fff] w-[100px] h-[30px] mt-5 flex gap-2 items-center justify-center rounded"
                 >
-                  <span>{mLoad ? "Deleting..." : "Delete All"}</span>
-                  <i
-                    className={mLoad ? "pi pi-spin pi-spinner" : "pi pi-trash"}
-                  ></i>
+                  <span>Delete All</span>
+                  <i className="pi pi-trash"></i>
                 </button>
               </div>
               <table>

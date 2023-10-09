@@ -6,7 +6,7 @@ import { DeleteConfirmation } from "../../layouts/DeleteConfirmation";
 export const AdminPanel = () => {
   return (
     <div className="flex flex-row">
-      <DeleteConfirmation />
+      {/* <DeleteConfirmation /> */}
       <Sidebar />
       <div className="flex flex-col w-full">
         <Headbar />
