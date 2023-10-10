@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import "../Style/layout/layout.css";
+import { Delete } from "react-axios";
 
 export const Notifications = ({ status, showNotification }) => {
   let notification_message;
@@ -32,6 +33,9 @@ export const Notifications = ({ status, showNotification }) => {
       break;
     case "offline":
       notify = <Offline />;
+      break;
+    case "deleted":
+      notify = <Deleted />;
       break;
     default:
   }
@@ -97,6 +101,17 @@ export const Offline = () => {
       <div className="flex items-center gap-3 w-full flex-nowrap">
         <i className="pi pi-wifi" />
         <span>Check your internet connection</span>
+      </div>
+    </div>
+  );
+};
+
+export const Deleted = () => {
+  return (
+    <div className="h-[70px] shadow-lg bg-rose-500 bg-opacity-70 text-rose-900 text-f16 flex items-center px-2 rounded-lg">
+      <div className="flex items-center gap-3 w-full flex-nowrap">
+        <i className="pi pi-trash" />
+        <span>Deleted</span>
       </div>
     </div>
   );

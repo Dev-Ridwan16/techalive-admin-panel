@@ -84,6 +84,8 @@ const formatDate = (dateString) => {
 export const Products = function () {
   const isTablet = window.innerWidth >= 768;
   const navigate = useNavigate();
+  const [status, setStatus] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
   const [pathnameChange, setPathnameChange] = useState(true);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [mLoad, setMLoad] = useState(false); //For auto refresh
@@ -137,7 +139,14 @@ export const Products = function () {
       );
 
       setMLoad(false);
-      setProductData(data.products);
+      switch (result.status) {
+        case 204:
+          setShowNotification(true);
+          setStatus("deleted");
+          setOpenConfirm(false);
+          break;
+        default:
+      }
     } catch (error) {
       console.log("Error", error);
       dispatch(setLoading(false));
@@ -146,12 +155,24 @@ export const Products = function () {
     }
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowNotification(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const closeConfirm = function () {
     setOpenConfirm(false);
   };
 
   return (
     <div>
+      <Notifications
+        status={status}
+        showNotification={showNotification}
+      />
       {openConfirm && (
         <DeleteConfirmation
           handleDeleteAll={handleDeleteAll}
@@ -196,6 +217,7 @@ export const Products = function () {
               </div>
               <div>
                 <button
+                  disabled={productData.length < 1 ? true : false}
                   onClick={() => setOpenConfirm(true)}
                   className="bg-red text-[#fff] w-[100px] h-[30px] mt-5 flex gap-2 items-center justify-center rounded"
                 >

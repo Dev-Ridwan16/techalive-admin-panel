@@ -8,7 +8,7 @@
 }
 
 .confirm-del-container {
-  @apply w-[250px] h-[150px] bg-[#fff] shadow-lg absolute z-[999] top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] p-3 rounded-md
+  @apply w-[300px] h-[150px] bg-[#fff] shadow-xl absolute z-[999] top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] p-3 rounded-md
 }
 
 .confirm-del-container .confirmation {
