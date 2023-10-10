@@ -43,7 +43,7 @@
 
 /* Board */
 .board-header {
-    @apply text-grey text-f20 mb-8
+    @apply text-grey text-f20
 }
 
 .custom-image{

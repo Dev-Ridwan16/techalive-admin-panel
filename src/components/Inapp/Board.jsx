@@ -91,19 +91,35 @@ export const Products = function () {
   const [mLoad, setMLoad] = useState(false); //For auto refresh
   const [searchProduct, setSearchProduct] = useState("");
   const [productData, setProductData] = useState([]);
+  const [noDataFound, setNoDataFound] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(5000);
-  const dispatch = useDispatch();
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const { isLoading } = useSelector((state) => state.loading);
+  const dispatch = useDispatch();
 
   const handleNavigate = function () {
     navigate("/admin-panel/products/add-new-product");
     setPathnameChange(false);
   };
 
+  useEffect(() => {
+    const handleOnlineStatusChange = function () {
+      setIsOnline(true);
+    };
+
+    const handleOfflineStatusChange = function () {
+      setIsOnline(false);
+    };
+
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOfflineStatusChange);
+  });
+
   // get all products
   useEffect(() => {
     const getProducts = async () => {
       dispatch(setLoading(true));
+
       try {
         const response = await axios.get(
           "https://techalive.onrender.com/api/v1/product/all-products"
@@ -115,10 +131,16 @@ export const Products = function () {
         switch (response.status) {
           case 200:
             dispatch(setLoading(false));
+            break;
+          default:
+        }
+        if (data.products.length === 0) {
         }
         setDate(newDate.toLocaleDateString("en-US", options));
       } catch (error) {
         console.log("Error:", error);
+        setShowNotification(true);
+        !isOnline ? setStatus("offline") : null;
       } finally {
         dispatch(setLoading(false));
       }
@@ -126,7 +148,11 @@ export const Products = function () {
 
     // getProducts();
 
-    const interval = setInterval(getProducts, pollingInterval);
+    const interval = setInterval(
+      getProducts,
+      pollingInterval,
+      setShowNotification(false)
+    );
 
     return () => clearInterval(interval);
   }, [productData]);
@@ -137,7 +163,6 @@ export const Products = function () {
       const result = await axios.delete(
         "https://techalive.onrender.com/api/v1/product/delete-products"
       );
-
       setMLoad(false);
       switch (result.status) {
         case 204:
@@ -149,6 +174,8 @@ export const Products = function () {
       }
     } catch (error) {
       console.log("Error", error);
+      setShowNotification(true);
+      !isOnline ? setStatus(true) : null;
       dispatch(setLoading(false));
     } finally {
       setMLoad(false);
@@ -156,12 +183,12 @@ export const Products = function () {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const interval = setTimeout(function () {
       setShowNotification(false);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [status]);
 
   const closeConfirm = function () {
     setOpenConfirm(false);
@@ -169,19 +196,18 @@ export const Products = function () {
 
   return (
     <div>
-      <Notifications
-        status={status}
-        showNotification={showNotification}
-      />
-      {openConfirm && (
-        <DeleteConfirmation
-          handleDeleteAll={handleDeleteAll}
-          closeConfirm={closeConfirm}
-          mLoad={mLoad}
-        />
-      )}
-
-      <h1 className="board-header">Products</h1>
+      <div className="flex flex-row items-center justify-between mb-8">
+        <h1 className="board-header">Products</h1>
+        {location.pathname === "/admin-panel/products/add-new-product" ? (
+          <button
+            className="w-[50px] md:w-[100px] h-[30px] border rounded flex items-center gap-3 justify-center"
+            onClick={() => navigate(-1)}
+          >
+            <i className="pi pi-arrow-left"></i>
+            <span className="hidden md:block">Go Back</span>
+          </button>
+        ) : null}
+      </div>
       {location.pathname !== "/admin-panel/products" ? null : isLoading ? (
         <div className="flex flex-col items-center justify-center gap-3 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
           <i className="pi pi-spin pi-spinner" />
@@ -193,6 +219,17 @@ export const Products = function () {
         <div className="toggle-board">
           {location.pathname === "/admin-panel/products" ? (
             <div>
+              <Notifications
+                status={status}
+                showNotification={showNotification}
+              />
+              {openConfirm && (
+                <DeleteConfirmation
+                  handleDeleteAll={handleDeleteAll}
+                  closeConfirm={closeConfirm}
+                  mLoad={mLoad}
+                />
+              )}
               <div className="flex flex-row item-center justify-between">
                 <button
                   className={`w-[50px] md:w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
@@ -237,44 +274,50 @@ export const Products = function () {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {productData
-                    .filter((product) =>
-                      searchProduct.toLowerCase() === ""
-                        ? product
-                        : product.name
-                            .toLowerCase()
-                            .includes(searchProduct.toLowerCase())
-                    )
-                    .map((product, index) => (
-                      <tr key={index}>
-                        <td>Image</td>
-                        <td>{product.name}</td>
-                        <td>{product.category}</td>
-                        <td>$ {product.price}</td>
+                {productData.length < 1 ? (
+                  <h1 className="text-center mt-10  text-f20">
+                    Found No Data!
+                  </h1>
+                ) : (
+                  <tbody>
+                    {productData
+                      .filter((product) =>
+                        searchProduct.toLowerCase() === ""
+                          ? product
+                          : product.name
+                              .toLowerCase()
+                              .includes(searchProduct.toLowerCase())
+                      )
+                      .map((product, index) => (
+                        <tr key={index}>
+                          <td>Image</td>
+                          <td>{product.name}</td>
+                          <td>{product.category}</td>
+                          <td>$ {product.price}</td>
 
-                        {isTablet ? (
+                          {isTablet ? (
+                            <td>
+                              {product.description.length > 10
+                                ? product.description.slice(0, 10) + "..."
+                                : product.description}
+                            </td>
+                          ) : null}
+
+                          <td>{formatDate(product.date)}</td>
                           <td>
-                            {product.description.length > 10
-                              ? product.description.slice(0, 10) + "..."
-                              : product.description}
+                            <ul className="flex items-center justify-center gap-5">
+                              <li>
+                                <i className="pi pi-pencil text-green-600"></i>
+                              </li>
+                              <li>
+                                <i className="pi pi-trash text-red"></i>
+                              </li>
+                            </ul>
                           </td>
-                        ) : null}
-
-                        <td>{formatDate(product.date)}</td>
-                        <td>
-                          <ul className="flex items-center justify-center gap-5">
-                            <li>
-                              <i className="pi pi-pencil text-green-600"></i>
-                            </li>
-                            <li>
-                              <i className="pi pi-trash text-red"></i>
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
+                        </tr>
+                      ))}
+                  </tbody>
+                )}
               </table>
             </div>
           ) : null}
@@ -308,7 +351,6 @@ export const AddProduct = () => {
   const [status, setStatus] = useState("");
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showNotification, setShowNotification] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event) => {
@@ -386,7 +428,9 @@ export const AddProduct = () => {
             break;
         }
       } catch (error) {
-        console.log("Error:", error);
+        !isOnline ? setStatus("offline") : null;
+        setShowNotification(true);
+        setIsLoading(false);
       }
     } else {
       setIsLoading(isLoading);
@@ -402,6 +446,9 @@ export const AddProduct = () => {
   }, [status]);
   return (
     <div className="">
+      {isLoading && (
+        <div className=" absolute top-0 left-0 w-screen h-screen"></div>
+      )}
       <div className="float-right">
         <Notifications
           status={status}
