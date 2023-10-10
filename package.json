@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "engines": {
-    "node": "^14.18.0 || >=16.0.0"
+    "node": ">=14.20.1"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.6",
