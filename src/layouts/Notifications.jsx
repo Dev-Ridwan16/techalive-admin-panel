@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import "../Style/layout/layout.css";
-import { Delete } from "react-axios";
 
 export const Notifications = ({ status, showNotification }) => {
   let notification_message;
