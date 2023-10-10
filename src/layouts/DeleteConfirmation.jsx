@@ -3,7 +3,6 @@ import React from "react";
 export const DeleteConfirmation = ({
   closeConfirm,
   handleDeleteAll,
-  deletingProgress,
   mLoad,
 }) => {
   let question;
@@ -30,7 +29,7 @@ export const DeleteConfirmation = ({
         <div className="confirm-btns">
           <button onClick={closeConfirm}>Cancle</button>
           <button onClick={handleDeleteAll}>
-            {mLoad ? `Deleting ${deletingProgress}%` : "Yes, Delete"}
+            {mLoad ? `Deleting...` : "Yes, Delete!"}
           </button>
         </div>
       </div>

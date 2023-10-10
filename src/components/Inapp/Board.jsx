@@ -90,7 +90,6 @@ export const Products = function () {
   const [searchProduct, setSearchProduct] = useState("");
   const [productData, setProductData] = useState([]);
   const [pollingInterval, setPollingInterval] = useState(5000);
-  const [deletingProgress, setDeletingProgress] = useState(0);
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.loading);
 
@@ -137,26 +136,8 @@ export const Products = function () {
         "https://techalive.onrender.com/api/v1/product/delete-products"
       );
 
-      const { data } = result.data;
-
-      // Calculating and set deletion progress
-      const totalProducts = productData.length;
-      const deletedProducts = totalProducts - data.product.length;
-      let progress = 0;
-      const interValId = setInterval(() => {
-        if (progress < 100) {
-          progress += 1;
-          setDeletingProgress(progress);
-        } else {
-          clearInterval(interValId);
-        }
-      }, 50);
-      setTimeout(() => {
-        setDeletingProgress(100);
-      }, 5000);
-
-      setProductData(data.products);
       setMLoad(false);
+      setProductData(data.products);
     } catch (error) {
       console.log("Error", error);
       dispatch(setLoading(false));
@@ -175,7 +156,6 @@ export const Products = function () {
         <DeleteConfirmation
           handleDeleteAll={handleDeleteAll}
           closeConfirm={closeConfirm}
-          deletingProgress={deletingProgress}
           mLoad={mLoad}
         />
       )}
