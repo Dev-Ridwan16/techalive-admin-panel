@@ -37,13 +37,57 @@
 }
 
 .bottom-nav {
-    @apply flex flex-row items-center justify-between sticky w-[90%] mx-auto left-0 bg-grey bg-opacity-5 h-[60px] px-3 rounded-xl
+    @apply flex flex-row items-center justify-between sticky w-[90%] mx-auto left-0 bg-[#eee9e9] h-[60px] px-3 rounded-xl
 }
 
 
 /* Board */
 .board-header {
     @apply text-grey text-f20
+}
+
+.dashboard-container {
+    @apply flex flex-row flex-wrap lg:justify-between gap-5
+}
+
+.dashboard-container .dashboard-wrapper {
+    @apply w-full md:w-[200px] h-[150px] md:h-[100px] px-5 py-3 rounded text-[#fff] flex flex-col justify-between
+}
+
+.dashboard-container .dashboard-wrapper:nth-child(1) {
+    @apply bg-gradient-to-tr from-pink to-[#f78cb8] 
+}
+
+.dashboard-container .dashboard-wrapper:nth-child(2) {
+    @apply bg-gradient-to-tr from-[#7142f3] to-[#a98cf7] 
+}
+
+.dashboard-container .dashboard-wrapper:nth-child(3) {
+    @apply bg-gradient-to-tr from-[#279230] to-[#8cf7ac] 
+}
+
+.dashboard-container .dashboard-wrapper:nth-child(4) {
+    @apply bg-gradient-to-tr from-[#892792] to-[#f78ce5] 
+}
+
+.dashboard-container .dashboard-wrapper:nth-child(5) {
+    @apply bg-gradient-to-tr from-[#276792] to-[#8cd9f7] 
+}
+
+.dashboard-container .dashboard-content {
+    @apply flex items-center justify-between
+}
+
+.dashboard-container .dashboard-wrapper h4, .dashboard-container .dashboard-wrapper h2 {
+    @apply text-[#fff]
+}
+
+.dashboard-container .dashboard-wrapper h2 {
+    @apply text-f40 md:text-f25
+}
+
+.dashboard-container .dashboard-wrapper .dashboard-content i.dashboard-icon {
+    @apply text-f40 md:text-f25
 }
 
 .custom-image{

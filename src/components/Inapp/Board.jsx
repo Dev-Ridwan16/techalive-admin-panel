@@ -50,11 +50,91 @@ export const Board = () => {
 };
 
 export const Overview = () => {
+  const [allProducts, setAllProducts] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const response = await axios.get(
+          "https://techalive.onrender.com/api/v1/product/all-products"
+        );
+
+        const { data } = response.data;
+
+        setAllProducts(data.products);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getUsers = async () => {
+      try {
+        const response = await axios.get(
+          "https://techalive.onrender.com/api/v1/user/get-users"
+        );
+
+        const { data } = response.data;
+        setAllUsers(data.getAllUsers);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getProducts();
+    getUsers();
+  });
+
   return (
     <div>
       <h1 className="board-header">Overview</h1>
-      <div className="flex flex-row justify-between">
-        {overview_total.map((each, i) => (
+      <div className="dashboard-container">
+        <div className="dashboard-wrapper">
+          <h4 className="font-bodyFamily">Products</h4>
+          <div className="dashboard-content">
+            <i className="pi pi-chart-pie dashboard-icon"></i>
+            <h2 className="flex items-center justify-center h-full text-f25 ">
+              {allProducts.length}
+            </h2>
+          </div>
+        </div>
+        <div className="dashboard-wrapper">
+          <h4 className="font-bodyFamily">Workers</h4>
+          <div className="dashboard-content">
+            <i className="pi pi-users dashboard-icon"></i>
+            <h2 className="flex items-center justify-center h-full text-f25 ">
+              {allUsers.length}
+            </h2>
+          </div>
+        </div>
+        <div className="dashboard-wrapper">
+          <h4 className="font-bodyFamily">Blogs</h4>
+          <div className="dashboard-content">
+            <i className="pi pi-chart-bar dashboard-icon"></i>
+            <h2 className="flex items-center justify-center h-full text-f25 ">
+              {allUsers.length}
+            </h2>
+          </div>
+        </div>
+        <div className="dashboard-wrapper">
+          <h4 className="font-bodyFamily">Reviews</h4>
+          <div className="dashboard-content">
+            <i className="pi pi-eye dashboard-icon"></i>
+            <h2 className="flex items-center justify-center h-full text-f25 ">
+              {allUsers.length}
+            </h2>
+          </div>
+        </div>
+        <div className="dashboard-wrapper">
+          <h4 className="font-bodyFamily">Appointments</h4>
+          <div className="dashboard-content">
+            <i className="pi pi-inbox dashboard-icon"></i>
+            <h2 className="flex items-center justify-center h-full text-f25 ">
+              {allUsers.length}
+            </h2>
+          </div>
+        </div>
+        {/* {overview_total.map((each, i) => (
           <div
             key={i}
             className="bg-grey bg-opacity-10 w-[200px] h-[100px] px-5 py-3 rounded"
@@ -64,7 +144,7 @@ export const Overview = () => {
               {each._total}
             </h2>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
