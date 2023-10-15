@@ -10,26 +10,3 @@ h1, h2, h3, h4, h5, h6 {
     @apply font-headFamily text-blue font-wr
 }
 
-table {
-    @apply w-full mt-5
-}
-
-table thead tr {
-    @apply border w-[100%]
-}
-
-table thead tr th, table tbody tr td {
-    @apply border-r w-[150px] text-center py-3
-}
-
-table tbody tr td {
-    @apply border-none
-}
-
-table tbody tr:nth-child(even) {
-    @apply bg-grey bg-opacity-5
-}
-
-table tbody tr td ul {
-    @apply flex flex-col md:flex-row
-}

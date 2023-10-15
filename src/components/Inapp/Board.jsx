@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { overview_total } from "../../../default-api";
 
@@ -134,17 +134,29 @@ export const Overview = () => {
             </h2>
           </div>
         </div>
-        {/* {overview_total.map((each, i) => (
-          <div
-            key={i}
-            className="bg-grey bg-opacity-10 w-[200px] h-[100px] px-5 py-3 rounded"
-          >
-            <h4 className="text-grey font-bodyFamily">{each._for}</h4>
-            <h2 className="flex items-center justify-center h-full text-f25 text-blue">
-              {each._total}
-            </h2>
-          </div>
-        ))} */}
+      </div>
+      <div className="workers-container">
+        <h1>Workers</h1>
+        <p>Techalive consult ltd. workers </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allUsers.map((user, index) => (
+              <tr key={index}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>User</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -275,7 +287,7 @@ export const Products = function () {
   };
 
   return (
-    <div>
+    <div className="product-page">
       <div className="flex flex-row items-center justify-between mb-8">
         <h1 className="board-header">Products</h1>
         {location.pathname === "/admin-panel/products/add-new-product" ? (
@@ -370,7 +382,10 @@ export const Products = function () {
                       )
                       .map((product, index) => (
                         <tr key={index}>
-                          <td>Image</td>
+                          <td>
+                            {/* <img src={`/img/products/${product.image}`} /> */}
+                            <img src={`${product.image}`} />
+                          </td>
                           <td>{product.name}</td>
                           <td>{product.category}</td>
                           <td>$ {product.price}</td>
@@ -417,7 +432,6 @@ export const AddProduct = () => {
   const [productDetails, setProductDetails] = useState({
     name: "",
     price: "",
-    // discount: 4,
     category: "",
     description: "",
   });
@@ -426,12 +440,16 @@ export const AddProduct = () => {
     name: "",
     price: "",
     category: "",
+    description: "",
   });
 
   const [status, setStatus] = useState("");
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showNotification, setShowNotification] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef(null);
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [filePreview, setFilePreview] = useState(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -444,6 +462,31 @@ export const AddProduct = () => {
           ? `${name.charAt(0).toUpperCase() + name.slice(1)} is required.`
           : "",
     });
+  };
+
+  const handleFileSelect = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      setSelectedFileName(selectedFile.name);
+
+      if (selectedFile.type.startsWith("image/")) {
+        const previewURL = URL.createObjectURL(selectedFile);
+        setFilePreview(previewURL);
+      } else {
+        setFilePreview(null);
+      }
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setFilePreview(null);
+    setSelectedFileName("");
+    fileInputRef.current.value = "";
   };
 
   // Check connection
@@ -488,10 +531,27 @@ export const AddProduct = () => {
     if (validateForm()) {
       setIsLoading(true);
 
+      const formData = new FormData();
+
+      // Append the image file to the FormData
+      if (fileInputRef.current.files[0]) {
+        formData.append("image", fileInputRef.current.files[0]);
+      }
+
+      // Append other product details to the FormData
+      formData.append("name", productDetails.name);
+      formData.append("price", productDetails.price);
+      formData.append("category", productDetails.category);
+      formData.append("description", productDetails.description);
       try {
         const response = await axios.post(
           "https://techalive.onrender.com/api/v1/product/add-product",
-          productDetails
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
 
         switch (response.status) {
@@ -505,6 +565,9 @@ export const AddProduct = () => {
               category: "",
               description: "",
             });
+            setFilePreview(null);
+            setSelectedFileName("");
+            fileInputRef.current.value = "";
             break;
         }
       } catch (error) {
@@ -557,12 +620,38 @@ export const AddProduct = () => {
             <div className="product-information-wrapper">
               <div className="flex flex-col gap-3">
                 <label htmlFor="">Image</label>
-                <div className="border flex items-center justify-center rounded-md p-3 w-[80px] h-[80px]">
-                  <img
-                    src={AddImage}
-                    alt=""
-                    className="custom-image"
-                  />
+                <div className="flex flex-row items-center gap-2">
+                  <div
+                    className="border flex flex-row items-center justify-center rounded-md p-3 w-[80px] h-[80px] cursor-pointer"
+                    onClick={handleFileSelect}
+                  >
+                    <img
+                      src={AddImage}
+                      alt=""
+                      className="custom-image"
+                    />
+                    <input
+                      name="image"
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={handleFileChange}
+                    />
+                  </div>
+                  <div>
+                    {selectedFileName && (
+                      <div className="flex items-center gap-3">
+                        <p className=" bg-gray-300 p-1 rounded">
+                          {selectedFileName}
+                        </p>
+                        <i
+                          className="pi pi-times text-f10 text-red"
+                          onClick={handleRemoveFile}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="text-details">
@@ -629,7 +718,14 @@ export const AddProduct = () => {
           </div>
           <div className="preview">
             <div className="max-w-[85%] md:max-w-[75%] mx-auto mt-4">
-              <div className="preview-container"></div>
+              <div className="preview-container">
+                {filePreview && typeof filePreview === "string" && (
+                  <img
+                    src={filePreview}
+                    alt=""
+                  />
+                )}
+              </div>
               <div className="preview-details">
                 <h3 className=" font-bodyFamily text-f16 text-grey mt-2 font-wm">
                   {productDetails.category}

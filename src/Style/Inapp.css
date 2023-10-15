@@ -90,6 +90,32 @@
     @apply text-f40 md:text-f25
 }
 
+div .workers-container {
+    @apply border h-[300px] w-full md:w-[500px] px-3 mt-5
+}
+
+div .workers-container h1 {
+    @apply font-bodyFamily mt-1
+}
+
+div .workers-container table {
+    @apply w-full mt-5
+}
+
+div .workers-container thead tr {
+    @apply  w-[100%] hidden
+}
+
+div .workers-container table thead tr th, div .workers-container table tbody tr td {
+    @apply  w-[220px] text-start py-1 px-2 flex
+}
+
+div .workers-container table tbody tr:nth-child(even) {
+    @apply bg-[#d7d7d7]
+}
+
+
+
 .custom-image{
     filter:opacity(60%);
     height: 25px;
@@ -120,4 +146,32 @@
 
 .preview-container {
     @apply w-[300px] md:w-[400px] h-[200px] rounded-md border
+}
+
+.preview-container img {
+    @apply w-full h-full object-contain
+}
+
+.product-page table {
+    @apply w-full mt-5
+}
+
+.product-page table thead tr {
+    @apply border w-[100%]
+}
+
+.product-page table thead tr th, .product-page table tbody tr td {
+    @apply border-r w-[150px] text-center py-2
+}
+
+.product-page table tbody tr td {
+    @apply border-none
+}
+
+.product-page table tbody tr:nth-child(even) {
+    @apply bg-grey bg-opacity-5
+}
+
+.product-page table tbody tr td ul {
+    @apply flex flex-col md:flex-row
 }
