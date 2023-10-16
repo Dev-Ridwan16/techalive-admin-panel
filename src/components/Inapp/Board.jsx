@@ -10,6 +10,7 @@ import axios from "axios";
 
 import { Notifications } from "../../layouts/Notifications";
 import { DeleteConfirmation } from "../../layouts/DeleteConfirmation";
+import EditingModal from "../../layouts/EditingModal";
 
 export const Board = () => {
   return (
@@ -183,7 +184,8 @@ export const Products = function () {
   const [mLoad, setMLoad] = useState(false); //For auto refresh
   const [searchProduct, setSearchProduct] = useState("");
   const [productData, setProductData] = useState([]);
-  const [noDataFound, setNoDataFound] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [popup, setPopup] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(5000);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const { isLoading } = useSelector((state) => state.loading);
@@ -286,8 +288,27 @@ export const Products = function () {
     setOpenConfirm(false);
   };
 
+  /* --- Editing specific product */
+
+  const handleEditProduct = (product) => {
+    setPopup(true);
+    setSelectedProduct(product);
+    console.log(product);
+  };
+
+  const closeEditModal = () => {
+    setPopup(false);
+  };
+
   return (
     <div className="product-page">
+      {popup && (
+        <EditingModal
+          selectedProduct={selectedProduct}
+          closeEditModal={closeEditModal}
+          popup={popup}
+        />
+      )}
       <div className="flex flex-row items-center justify-between mb-8">
         <h1 className="board-header">Products</h1>
         {location.pathname === "/admin-panel/products/add-new-product" ? (
@@ -383,8 +404,8 @@ export const Products = function () {
                       .map((product, index) => (
                         <tr key={index}>
                           <td>
-                            {/* <img src={`/img/products/${product.image}`} /> */}
-                            <img src={`${product.image}`} />
+                            <img src={`/img/products/${product.image}`} />
+                            {/* <img src={`${product.image}`} /> */}
                           </td>
                           <td>{product.name}</td>
                           <td>{product.category}</td>
@@ -401,7 +422,7 @@ export const Products = function () {
                           <td>{formatDate(product.date)}</td>
                           <td>
                             <ul className="flex items-center justify-center gap-5">
-                              <li>
+                              <li onClick={() => handleEditProduct(product)}>
                                 <i className="pi pi-pencil text-green-600"></i>
                               </li>
                               <li>

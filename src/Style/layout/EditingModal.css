@@ -1,0 +1,48 @@
+.modal-overlay {
+    @apply w-screen h-screen fixed left-0 top-0 bg-blue bg-opacity-10 z-[900]
+}
+
+.editing-modal-container {
+    @apply absolute w-[300px] md:w-[400px] h-[550px]  bg-[#fafafa] shadow-lg rounded;
+    @apply top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-3 transition-all duration-1000 ease-in-out;
+}
+
+
+
+.editing-modal-container .lead-head {
+    @apply flex items-start justify-between mt-2 mb-5
+}
+
+.editing-modal-container .lead-head h1 {
+    @apply text-f16 text-grey
+}
+
+.editing-modal-container .lead-head button {
+    @apply border rounded px-2 py-1 flex items-center gap-2 transition-all duration-500 ease-in-out
+}
+
+.editing-modal-container .lead-head button:hover {
+    @apply text-red border-red
+}
+
+.editing-modal-container .selectingFile img {
+    @apply w-[70px] h-[70px] rounded-full border
+}
+
+.editing-modal-container .selectingFile button {
+    @apply h-[30px] w-[120px] rounded border px-2 my-3
+}
+
+/* .editing-modal-container form */
+
+.editing-modal-container form input, .editing-modal-container form select, .editing-modal-container form textarea {
+    @apply w-full h-[30px] mt-4 px-3 outline-none bg-grey bg-opacity-10 rounded
+}
+
+.editing-modal-container form textarea {
+    @apply h-[120px] max-h-[120px] min-h-[120px]
+}
+
+.editing-modal-container form .submit-update {
+    @apply bg-green-500 w-[100px] h-[30px] text-white rounded mt-5
+}
