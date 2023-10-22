@@ -3,16 +3,20 @@ import React, { useState } from "react";
 import "../../Style/Inapp.css";
 import { sidebar_links } from "../../../default-api";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 // export
 
-export const Sidebar = () => {
+export const Sidebar = ({ handleLogout }) => {
   const [active, setActive] = useState(null);
   const isTablet = window.innerWidth <= 1023;
 
   const handleActive = function (index) {
     setActive(index === active ? null : index);
   };
+
+  // Implemented logout handler in AdminPanel.jsx
+
   return (
     <div className="sidebar-container">
       <div
@@ -39,7 +43,7 @@ export const Sidebar = () => {
         ))}
       </div>
       <div className="logout-btn">
-        <button>
+        <button onClick={handleLogout}>
           <i className="pi pi-sign-out"></i>
           {isTablet ? null : <span>Logout</span>}
         </button>
@@ -91,6 +95,21 @@ export const BottomNav = () => {
             </Link>
           </div>
         ))}
+      </div>
+    </div>
+  );
+};
+
+export const LogoutModal = () => {
+  return (
+    <div
+      className={`
+    absolute z-[999] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] 
+    h-[100px] w-[150px] rounded-md shadow-lg bg-[#fff]`}
+    >
+      <div className="flex flex-col items-center justify-center gap-2 h-full">
+        <span>Login out user</span>
+        <i className="pi pi-spin pi-spinner" />
       </div>
     </div>
   );

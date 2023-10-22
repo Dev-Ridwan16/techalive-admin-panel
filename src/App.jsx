@@ -6,15 +6,13 @@ import "primeicons/primeicons.css";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { AdminPanel } from "./components/Inapp/AdminPanel";
-import {
-  AddProduct,
-  Appointments,
-  Blogs,
-  Overview,
-  Products,
-  Reviews,
-  Settings,
-} from "./components/Inapp/Board";
+import { AddProduct } from "./components/Inapp/Dashboards/AddProduct";
+import { Appointments } from "./components/Inapp/Dashboards/Appointments";
+import { Blogs } from "./components/Inapp/Dashboards/Blogs";
+import { Overview } from "./components/Inapp/Board";
+import { Products } from "./components/Inapp/Dashboards/Products";
+import { Reviews } from "./components/Inapp/Dashboards/Reviews";
+import Settings from "./components/Inapp/Dashboards/Settings";
 import { Notifications } from "./layouts/Notifications";
 
 import { SignupComp } from "./components/AccountForm";

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, Route, Router, Routes, useNavigate } from "react-router-dom";
-import axios from "axios";
-import Welcome_Illus from "../../public/welcome.svg";
 import { Notifications } from "../layouts/Notifications";
-
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setError } from "../features/loadingSlice";
+
+import axios from "axios";
+import Cookies from "js-cookie";
+import Welcome_Illus from "../../public/welcome.svg";
 
 // Style
 import "../Style/Account.css";
@@ -353,6 +354,12 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
 
         switch (response.status) {
           case 200:
+            const jwtToken = response.data.token;
+
+            Cookies.set("jwt", jwtToken);
+
+            // console.log(jwtToken);
+            console.log(response);
             setShowNotification(true);
             setStatus("success");
             dispatch(setLoading(false));

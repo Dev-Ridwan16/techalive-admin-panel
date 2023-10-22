@@ -7,8 +7,6 @@
     @apply top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-3 transition-all duration-1000 ease-in-out;
 }
 
-
-
 .editing-modal-container .lead-head {
     @apply flex items-start justify-between mt-2 mb-5
 }
