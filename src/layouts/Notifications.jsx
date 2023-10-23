@@ -25,6 +25,8 @@ export const Notifications = ({ status, showNotification }) => {
         notification_message = "Product added successfully";
       } else if (location.pathname === "admin-panel/blogs") {
         notification_message = "Your blog has been posted";
+      } else if (location.pathname === "/admin-panel/products") {
+        notification_message = "Product updated successfully";
       }
       notify = <Success notification_message={notification_message} />;
       break;

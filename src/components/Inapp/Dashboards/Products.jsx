@@ -35,7 +35,7 @@ export const Products = function () {
   const [productData, setProductData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [popup, setPopup] = useState(false);
-  const [pollingInterval, setPollingInterval] = useState(5000);
+  const [pollingInterval, setPollingInterval] = useState(10000);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const { isLoading } = useSelector((state) => state.loading);
   const dispatch = useDispatch();
