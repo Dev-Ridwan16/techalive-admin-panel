@@ -17,6 +17,7 @@ import { Blogs } from "./Dashboards/Blogs";
 import { Appointments } from "./Dashboards/Appointments";
 import { Reviews } from "./Dashboards/Reviews";
 import Settings from "./Dashboards/Settings";
+import NewPost from "./Dashboards/NewPost";
 
 export const Board = () => {
   return (
@@ -38,7 +39,12 @@ export const Board = () => {
         <Route
           path="blogs"
           element={<Blogs />}
-        />
+        >
+          <Route
+            path="new-blog-post"
+            element={<NewPost />}
+          />
+        </Route>
         <Route
           path="appointments"
           element={<Appointments />}

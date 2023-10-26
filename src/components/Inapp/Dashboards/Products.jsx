@@ -35,7 +35,7 @@ export const Products = function () {
   const [productData, setProductData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [popup, setPopup] = useState(false);
-  const [pollingInterval, setPollingInterval] = useState(10000);
+  const [pollingInterval, setPollingInterval] = useState(5000);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const { isLoading } = useSelector((state) => state.loading);
   const dispatch = useDispatch();
@@ -76,6 +76,8 @@ export const Products = function () {
         );
         const { data } = response.data;
         setProductData(data.products);
+
+        // console.log(response.data.image);
 
         setDate();
         switch (response.status) {
@@ -178,6 +180,28 @@ export const Products = function () {
 
   const closeEditModal = () => {
     setPopup(false);
+  };
+
+  /* --- Delete specific product */
+  const handleDeleteProduct = async (product) => {
+    try {
+      const response = await axios.delete(
+        `https://techalive.onrender.com/api/v1/product/${product._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      switch (response.status) {
+        case 204:
+          setStatus("deleted");
+          setShowNotification(true);
+          break;
+        default:
+      }
+    } catch (error) {}
   };
 
   return (
@@ -305,7 +329,7 @@ export const Products = function () {
                               <li onClick={() => handleEditProduct(product)}>
                                 <i className="pi pi-pencil text-green-600"></i>
                               </li>
-                              <li>
+                              <li onClick={() => handleDeleteProduct(product)}>
                                 <i className="pi pi-trash text-red"></i>
                               </li>
                             </ul>

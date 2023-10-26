@@ -175,3 +175,131 @@ div .workers-container table tbody tr:nth-child(even) {
 .product-page table tbody tr td ul {
     @apply flex flex-col md:flex-row
 }
+
+.product-page table tbody tr td ul li {
+    @apply cursor-pointer
+}
+
+/* ----------  Blog Style Start here ---------- */
+.blogs-container {
+    @apply relative
+}
+
+.blogs-container .lead-top {
+    @apply w-full flex flex-row items-center justify-between
+}
+
+.blogs-container .lead-top input {
+    @apply border w-[250px] h-[30px] rounded-full px-2 text-f10
+}
+
+.blogs-container .lead-top button.parent {
+    @apply bg-green-500 text-[#fff] w-[100px] h-[30px] rounded 
+}
+
+.blogs-container .lead-top button.child {
+    @apply border text-grey w-[100px] h-[30px] rounded 
+}
+
+.blogs-container .slide-board {
+    @apply  mt-2  border-t p-5 
+}
+
+.blogs-container .slide-board .show-posted-blogs {
+    @apply flex flex-row flex-wrap gap-2 mt-2  border-t p-5 overflow-scroll
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper {
+    @apply w-[24%] relative overflow-hidden
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay {
+    @apply w-full h-[16%] absolute bottom-0 bg-blue text-[#fff] bg-opacity-40 rounded-md transition-all duration-500 ease-in-out
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper img {
+    @apply  h-[250px] w-full rounded-md relative
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .the-blog-contents {
+    @apply   px-2 text-white 
+} 
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay .the-blog-contents h2 {
+    @apply text-f20 text-white
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action {
+    @apply flex items-center justify-between gap-2 absolute top-4 left-[50%] translate-x-[-50%] z-50 w-[90%] h-0 text-f14 opacity-0 transition-opacity duration-500 ease-in-out
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action i{
+    @apply cursor-pointer
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action i:nth-child(odd) {
+    @apply text-green-500
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action i:nth-child(even) {
+    @apply text-rose-500
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay .the-blog-contents button {
+    @apply bg-[#b6b6b6] text-white text-f10 w-full h-[30px] rounded-sm mt-5
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper img:hover + .overlay, .blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay:hover{
+    @apply  h-[50%]
+    
+}
+
+.blogs-container .slide-board .show-posted-blogs .blog-wrapper img:hover + .server-action, .blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action:hover {
+   @apply opacity-100
+}
+
+/* ---------- {New Post Style} ---------- */
+
+.new-post-container .blog-details-wrapper {
+    @apply mb-3
+}
+
+.new-post-container .blog-details-wrapper button.post-btn {
+    @apply bg-green-700 text-[#fff] w-[150px] h-[30px] rounded
+}
+
+.new-post-container .blog-details-wrapper button.btn-disable {
+    @apply bg-opacity-40
+}
+
+.new-post-container .blog-details-wrapper .blog-details {
+    @apply flex flex-row items-center justify-between
+}
+
+.new-post-container .blog-details-wrapper .blog-details .details {
+    @apply  w-[40%] h-[200px] flex flex-col
+}
+
+.new-post-container .blog-details-wrapper .blog-details .details .field {
+    @apply relative
+}
+
+.new-post-container .blog-details-wrapper .blog-details .details .field i {
+    @apply absolute top-[20%] left-0 translate-y-[-20%] 
+}
+
+.new-post-container .blog-details-wrapper .blog-details .details .field input {
+    @apply border-b w-[300px] mb-5 outline-none px-6 py-2
+}
+
+.new-post-container .blog-details-wrapper .blog-details .img-preview {
+    @apply border w-[35%] h-[200px] relative
+}
+
+.new-post-container .blog-details-wrapper .blog-details .img-preview img {
+    @apply w-full h-full object-cover
+}
+
+.new-post-container .react-quill-editor {
+    @apply max-w-[100%] max-h-[30vh] h-[30vh]
+}

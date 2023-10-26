@@ -17,6 +17,7 @@ import { Notifications } from "./layouts/Notifications";
 
 import { SignupComp } from "./components/AccountForm";
 import { LoginComp } from "./components/AccountForm";
+import NewPost from "./components/Inapp/Dashboards/NewPost";
 
 function App() {
   const [isToggle, setIsToggle] = useState(true);
@@ -70,7 +71,12 @@ function App() {
           <Route
             path="blogs"
             element={<Blogs />}
-          />
+          >
+            <Route
+              path="new-blog-post"
+              element={<NewPost />}
+            />
+          </Route>
           <Route
             path="appointments"
             element={<Appointments />}
