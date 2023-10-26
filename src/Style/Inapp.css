@@ -190,11 +190,11 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .blogs-container .lead-top input {
-    @apply border w-[250px] h-[30px] rounded-full px-2 text-f10
+    @apply border w-[170px] md:w-[250px] h-[30px] rounded-full px-2 text-f10
 }
 
 .blogs-container .lead-top button.parent {
-    @apply bg-green-500 text-[#fff] w-[100px] h-[30px] rounded 
+    @apply bg-green-500 text-[#fff] w-[30px] md:w-[100px] h-[30px] rounded 
 }
 
 .blogs-container .lead-top button.child {
@@ -206,11 +206,11 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .blogs-container .slide-board .show-posted-blogs {
-    @apply flex flex-row flex-wrap gap-2 mt-2  border-t p-5 overflow-scroll
+    @apply flex flex-row flex-wrap gap-2 mt-2 overflow-scroll
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper {
-    @apply w-[24%] relative overflow-hidden
+    @apply w-full md:w-[49%] lg:w-[24%] relative overflow-hidden
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay {
@@ -265,7 +265,7 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .new-post-container .blog-details-wrapper button.post-btn {
-    @apply bg-green-700 text-[#fff] w-[150px] h-[30px] rounded
+    @apply bg-green-700 text-[#fff] w-[150px] h-[30px] rounded mt-5 md:mt-0
 }
 
 .new-post-container .blog-details-wrapper button.btn-disable {
@@ -273,11 +273,11 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .new-post-container .blog-details-wrapper .blog-details {
-    @apply flex flex-row items-center justify-between
+    @apply flex flex-col md:flex-row items-center justify-center md:justify-between
 }
 
 .new-post-container .blog-details-wrapper .blog-details .details {
-    @apply  w-[40%] h-[200px] flex flex-col
+    @apply  w-full md:w-[40%] h-[200px] flex flex-col
 }
 
 .new-post-container .blog-details-wrapper .blog-details .details .field {
@@ -293,7 +293,7 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .new-post-container .blog-details-wrapper .blog-details .img-preview {
-    @apply border w-[35%] h-[200px] relative
+    @apply border w-full md:w-[35%] h-[200px] relative
 }
 
 .new-post-container .blog-details-wrapper .blog-details .img-preview img {

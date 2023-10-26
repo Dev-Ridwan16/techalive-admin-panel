@@ -27,7 +27,14 @@ export default function NewPost() {
     setDisable(isAnyFieldEmpty);
   };
 
-  const handleSubmitBlog = () => {};
+  const post = {
+    ...blogDetails,
+    editorValue,
+  };
+
+  const handleSubmitBlog = () => {
+    console.log(post);
+  };
 
   return (
     <div className="new-post-container">
