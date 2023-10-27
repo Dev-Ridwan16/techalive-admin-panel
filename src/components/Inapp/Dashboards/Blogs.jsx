@@ -1,16 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../../Style/Inapp.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import NewPost from "./NewPost";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
+import Cookie from "js-cookie";
 
 export const Blogs = () => {
+  const [postedBlogs, setPostedBlogs] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
 
   const pathName = location.pathname === "/admin-panel/blogs";
 
   const screenSize = window.innerWidth;
+
+  const jwtToken = Cookie.get("jwt");
+
+  useEffect(() => {
+    const getAllBlogs = async () => {
+      try {
+        const response = await axios.get(
+          "https://techalive.onrender.com/api/v1/blog-post/all-blogs",
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        const data = response.data;
+
+        setPostedBlogs(data.allBlogs);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllBlogs();
+  });
 
   return (
     <div className="blogs-container">
@@ -24,6 +53,8 @@ export const Blogs = () => {
             type="search"
             name="search"
             placeholder="Search blog"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
         )}
 
@@ -41,46 +72,39 @@ export const Blogs = () => {
       <div className="slide-board">
         {pathName ? (
           <div className="show-posted-blogs">
-            <div className="blog-wrapper">
-              <img
-                src="https://images.pexels.com/photos/2528118/pexels-photo-2528118.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="blog-image"
-              />
+            {postedBlogs
+              .filter((blogs) =>
+                searchValue.toLowerCase() === ""
+                  ? blogs
+                  : blogs.title
+                      .toLowerCase()
+                      .includes(searchValue.toLowerCase())
+              )
+              .map((blogs, index) => (
+                <div
+                  key={index}
+                  className="blog-wrapper"
+                >
+                  <img
+                    src={blogs.image}
+                    alt="blog-image"
+                  />
 
-              <div className="server-action">
-                <i className="pi pi-pencil" />
-                <i className="pi pi-trash" />
-              </div>
+                  <div className="server-action">
+                    <i className="pi pi-pencil" />
+                    <i className="pi pi-trash" />
+                  </div>
 
-              <div className="overlay">
-                <div className="the-blog-contents">
-                  <h2>Title</h2>
-                  <p>Author</p>
-                  <p>DD/MM/YYYY - TIME</p>
-                  <button>Read post</button>
+                  <div className="overlay">
+                    <div className="the-blog-contents">
+                      <h2>{blogs.title}</h2>
+                      <p>{blogs.author}</p>
+                      <p>{blogs.createdOn}</p>
+                      <button>Read post</button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="blog-wrapper">
-              <img
-                src="https://images.pexels.com/photos/2528118/pexels-photo-2528118.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="blog-image"
-              />
-
-              <div className="server-action">
-                <i className="pi pi-pencil" />
-                <i className="pi pi-trash" />
-              </div>
-
-              <div className="overlay">
-                <div className="the-blog-contents">
-                  <h2>Title</h2>
-                  <p>Author</p>
-                  <p>DD/MM/YYYY - TIME</p>
-                  <button>Read post</button>
-                </div>
-              </div>
-            </div>
+              ))}
           </div>
         ) : (
           <Routes>

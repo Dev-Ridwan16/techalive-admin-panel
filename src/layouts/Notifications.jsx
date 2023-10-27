@@ -23,7 +23,7 @@ export const Notifications = ({ status, showNotification }) => {
         location.pathname === "/admin-panel/products/add-new-product"
       ) {
         notification_message = "Product added successfully";
-      } else if (location.pathname === "admin-panel/blogs") {
+      } else if (location.pathname === "/admin-panel/blogs/new-blog-post") {
         notification_message = "Your blog has been posted";
       } else if (location.pathname === "/admin-panel/products") {
         notification_message = "Product updated successfully";

@@ -20,6 +20,10 @@
 @apply mt-5 flex items-center md:justify-center lg:justify-start gap-3 h-[40px] px-2 rounded-md 
 }
 
+.wind-link {
+    @apply flex flex-row  items-center gap-3
+}
+
 .sidebar-container .links .nav-links.active {
     @apply bg-grey bg-opacity-10 transition-all duration-700 ease-in-out
 }
@@ -226,11 +230,12 @@ div .workers-container table tbody tr:nth-child(even) {
 } 
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay .the-blog-contents h2 {
-    @apply text-f20 text-white
+    @apply text-f14 text-white
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action {
-    @apply flex items-center justify-between gap-2 absolute top-4 left-[50%] translate-x-[-50%] z-50 w-[90%] h-0 text-f14 opacity-0 transition-opacity duration-500 ease-in-out
+    @apply flex items-center justify-between gap-2 absolute top-0  left-0 z-50 bg-blue bg-opacity-70 w-full h-[30px] ;
+    @apply text-f14 opacity-0 transition-opacity duration-500 ease-in-out rounded-md px-3
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper .server-action i{
@@ -246,7 +251,7 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay .the-blog-contents button {
-    @apply bg-[#b6b6b6] text-white text-f10 w-full h-[30px] rounded-sm mt-5
+    @apply bg-[#b6b6b6] text-white text-f10 w-full h-[30px] rounded-sm mt-3
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper img:hover + .overlay, .blogs-container .slide-board .show-posted-blogs .blog-wrapper .overlay:hover{

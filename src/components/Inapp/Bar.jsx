@@ -37,8 +37,18 @@ export const Sidebar = ({ handleLogout }) => {
             className={`nav-links ${index === active ? "active" : ""}`}
             onClick={() => handleActive(index)}
           >
-            <i className={`pi ${link.icon}`}></i>
-            {isTablet ? null : <Link to={link.path}>{link.name}</Link>}
+            <Link to={link.path}>
+              {isTablet ? (
+                <i className={`pi ${link.icon}`}></i>
+              ) : (
+                <div className="wind-link">
+                  <i className={`pi ${link.icon}`}></i>
+                  {link.name}
+                </div>
+              )}
+            </Link>
+
+            {/* {isTablet ? null : <Link to={link.path}>{link.name}</Link>} */}
           </div>
         ))}
       </div>

@@ -1,10 +1,19 @@
+import axios from "axios";
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import Cookie from "js-cookie";
+import { Notifications } from "../../../layouts/Notifications";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../../features/loadingSlice";
 
 export default function NewPost() {
   const [disable, setDisable] = useState(true);
-  const [editorValue, setEditorValue] = useState("");
+  const [blog, setBlog] = useState("");
+  const [status, setStatus] = useState("");
+  const [showNotification, setShowNotifcation] = useState(false);
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.loading);
 
   const [blogDetails, setBlogDetails] = useState({
     image: "",
@@ -13,7 +22,10 @@ export default function NewPost() {
   });
 
   const handleEditorValue = (value) => {
-    setEditorValue(value);
+    setBlog(value);
+
+    const isEditorEmpty = blog.trim().length < 100;
+    setDisable(isEditorEmpty);
   };
 
   const handleBlogDetailChange = (e) => {
@@ -24,20 +36,56 @@ export default function NewPost() {
     const isAnyFieldEmpty = Object.values(updatedBlogDetails).some(
       (field) => field.trim().length < 1
     );
+
     setDisable(isAnyFieldEmpty);
   };
 
   const post = {
     ...blogDetails,
-    editorValue,
+    blog,
   };
 
-  const handleSubmitBlog = () => {
-    console.log(post);
+  const jwtToken = Cookie.get("jwt");
+
+  const handleSubmitBlog = async () => {
+    setShowNotifcation(true);
+    dispatch(setLoading(true));
+    try {
+      const response = await axios.post(
+        "https://techalive.onrender.com/api/v1/blog-post/create-new-blog",
+        post,
+
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      console.log(post);
+
+      switch (response.status) {
+        case 201:
+          setStatus("success");
+          dispatch(setLoading(false));
+          break;
+        default:
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setStatus("warning");
+      }
+    }
   };
 
   return (
     <div className="new-post-container">
+      <div>
+        <Notifications
+          status={status}
+          showNotification={showNotification}
+        />
+      </div>
       <div className="blog-details-wrapper">
         <div className="blog-details">
           <div className="details">
@@ -47,7 +95,7 @@ export default function NewPost() {
                 type="text"
                 className="img-link"
                 placeholder="Image Link"
-                value={blogDetails.imgLink}
+                value={blogDetails.image}
                 onChange={handleBlogDetailChange}
                 required
               />
@@ -91,12 +139,18 @@ export default function NewPost() {
           disabled={disable ? true : false}
           onClick={handleSubmitBlog}
         >
-          Post blog
+          {isLoading ? (
+            <p>
+              <span>Posting...</span> <i className="pi pi-spin pi-spinner" />
+            </p>
+          ) : (
+            "Post blog"
+          )}
         </button>
       </div>
       <ReactQuill
         theme="snow"
-        value={editorValue}
+        value={blog}
         onChange={handleEditorValue}
         className="react-quill-editor"
       />
