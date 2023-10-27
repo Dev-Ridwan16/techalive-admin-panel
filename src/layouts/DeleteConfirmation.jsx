@@ -7,30 +7,34 @@ export const DeleteConfirmation = ({
 }) => {
   let question;
 
+  const pathName = ["/admin-panel/products", "/admin-panel/blogs"];
+
   switch (location.pathname) {
-    case "/admin-panel/products":
+    case pathName[0]:
       question = "delete all products";
       break;
-    case "/admin-panel/blogs":
-      question = "delete all blogs";
+    case pathName[1]:
+      question = "delete this blog";
       break;
     default:
   }
 
   return (
-    <div className="confirm-del-container">
-      <div className="confirmation">
-        <h3>Confirm Delete!</h3>
+    <div className="del-container">
+      <div className="confirm-del-container">
+        <div className="confirmation">
+          <h3>Confirm Delete!</h3>
 
-        <hr />
+          <hr />
 
-        <p>Are you sure you want to {question}?</p>
+          <p>Are you sure you want to {question}?</p>
 
-        <div className="confirm-btns">
-          <button onClick={closeConfirm}>Cancle</button>
-          <button onClick={handleDeleteAll}>
-            {mLoad ? `Deleting...` : "Yes, Delete!"}
-          </button>
+          <div className="confirm-btns">
+            <button onClick={closeConfirm}>Cancle</button>
+            <button onClick={handleDeleteAll}>
+              {mLoad ? `Deleting...` : "Yes, Delete!"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -7,6 +7,10 @@
     @apply w-[300px] 
 }
 
+.del-container {
+  @apply absolute w-screen h-screen bg-blue top-0 left-0 bg-opacity-10
+}
+
 .confirm-del-container {
   @apply w-[300px] h-[150px] bg-[#fff] shadow-xl absolute z-[999] top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] p-3 rounded-md
 }

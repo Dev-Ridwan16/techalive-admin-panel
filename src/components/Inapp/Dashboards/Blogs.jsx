@@ -7,13 +7,16 @@ import axios from "axios";
 import Cookie from "js-cookie";
 import "../../../Style/Inapp.css";
 import "react-quill/dist/quill.snow.css";
+import { DeleteConfirmation } from "../../../layouts/DeleteConfirmation";
 
 export const Blogs = () => {
   const [postedBlogs, setPostedBlogs] = useState([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showNotification, setShowNotification] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [updateBtn, setUpdateBtn] = useState(false);
   const [editBlog, setEditBlog] = useState(null);
+  const [blogToDelete, setBlogToDelete] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
@@ -80,89 +83,125 @@ export const Blogs = () => {
     navigate("/admin-panel/blogs/new-blog-post");
   };
 
+  const handleDeleteBlog = async (blog) => {
+    try {
+      await axios.delete(
+        `https://techalive.onrender.com/api/v1/blog-post/${blog}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      setConfirmDelete(false);
+    } catch (error) {}
+  };
+
+  const closeConfirm = function () {
+    setConfirmDelete(false);
+  };
+
   return (
-    <div className="blogs-container">
-      <Notifications
-        status={status}
-        showNotification={showNotification}
-      />
-      <div className="lead-top">
-        <h1 className="board-header text-f14">
-          {pathName ? "Blog - Dashboard" : "Create new post"}
-        </h1>
-
-        {pathName && (
-          <input
-            type="search"
-            name="search"
-            placeholder="Search blog"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
-        )}
-
-        <button
-          className={pathName ? "parent" : "child"}
-          onClick={() => {
-            pathName ? handleNavigateToParent() : navigate(-1);
+    <div>
+      {confirmDelete && (
+        <DeleteConfirmation
+          closeConfirm={closeConfirm}
+          handleDeleteAll={() => {
+            handleDeleteBlog(blogToDelete);
           }}
-        >
-          {pathName ? (screenSize < 768 ? "+" : "New post +") : "Go back"}
-        </button>
-      </div>
-      <div className="slide-board">
-        {pathName ? (
-          <div className="show-posted-blogs">
-            {postedBlogs
-              .filter((blogs) =>
-                searchValue.toLowerCase() === ""
-                  ? blogs
-                  : blogs.title
-                      .toLowerCase()
-                      .includes(searchValue.toLowerCase())
-              )
-              .map((blog, index) => (
-                <div
-                  key={index}
-                  className="blog-wrapper"
-                >
-                  <img
-                    src={blog.image}
-                    alt="blog-image"
-                  />
+        />
+      )}
+      <div className="blogs-container">
+        <Notifications
+          status={status}
+          showNotification={showNotification}
+        />
 
-                  <div className="server-action">
-                    <i
-                      className="pi pi-pencil"
-                      onClick={() => handleEditBlog(blog)}
+        <div className="lead-top">
+          <h1 className="board-header text-f14">
+            {pathName ? "Blog - Dashboard" : "Create new post"}
+          </h1>
+
+          {pathName && (
+            <input
+              type="search"
+              name="search"
+              placeholder="Search blog"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+          )}
+
+          <button
+            className={pathName ? "parent" : "child"}
+            onClick={() => {
+              pathName ? handleNavigateToParent() : navigate(-1);
+            }}
+          >
+            {pathName ? (screenSize < 768 ? "+" : "New post +") : "Go back"}
+          </button>
+        </div>
+        <div className="slide-board">
+          {pathName ? (
+            <div className="show-posted-blogs">
+              {postedBlogs
+                .filter((blogs) =>
+                  searchValue.toLowerCase() === ""
+                    ? blogs
+                    : blogs.title
+                        .toLowerCase()
+                        .includes(searchValue.toLowerCase())
+                )
+                .map((blog, index) => (
+                  <div
+                    key={index}
+                    className="blog-wrapper"
+                  >
+                    <img
+                      src={blog.image}
+                      alt="blog-image"
                     />
-                    <i className="pi pi-trash" />
-                  </div>
 
-                  <div className="overlay">
-                    <div className="the-blog-contents">
-                      <h2>{blog.title}</h2>
-                      <p>{blog.author}</p>
-                      <p>{blog.createdOn}</p>
-                      <button>Read post</button>
+                    <div className="server-action">
+                      <i
+                        className="pi pi-pencil"
+                        onClick={() => handleEditBlog(blog)}
+                      />
+                      <i
+                        className="pi pi-trash"
+                        onClick={() => {
+                          setBlogToDelete(blog._id);
+                          setConfirmDelete(true);
+                        }}
+                      />
+                    </div>
+
+                    <div className="overlay">
+                      <div className="the-blog-contents">
+                        <h2>{blog.title}</h2>
+                        <p>{blog.author}</p>
+                        <p>{blog.createdOn}</p>
+                        <button>Read post</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-          </div>
-        ) : (
-          <Routes>
-            <Route
-              path="new-blog-post"
-              element={
-                <NewPost
-                  editBlog={editBlog}
-                  updateBtn={updateBtn}
-                />
-              }
-            />
-          </Routes>
-        )}
+                ))}
+            </div>
+          ) : (
+            <Routes>
+              <Route
+                path="new-blog-post"
+                element={
+                  <NewPost
+                    editBlog={editBlog}
+                    updateBtn={updateBtn}
+                  />
+                }
+              />
+            </Routes>
+          )}
+        </div>
       </div>
     </div>
   );

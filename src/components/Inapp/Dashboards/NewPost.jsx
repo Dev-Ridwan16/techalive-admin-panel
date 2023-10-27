@@ -71,6 +71,12 @@ export default function NewPost({ editBlog, updateBtn }) {
         case 201:
           setStatus("success");
           dispatch(setLoading(false));
+          setBlogDetails({
+            image: "",
+            title: "",
+            author: "",
+          });
+          setBlog("");
           break;
         default:
       }
