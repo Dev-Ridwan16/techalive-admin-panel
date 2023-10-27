@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import "../../../Style/Inapp.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { Notifications } from "../../../layouts/Notifications";
 import NewPost from "./NewPost";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import Cookie from "js-cookie";
+import "../../../Style/Inapp.css";
+import "react-quill/dist/quill.snow.css";
 
 export const Blogs = () => {
   const [postedBlogs, setPostedBlogs] = useState([]);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showNotification, setShowNotification] = useState(false);
+  const [updateBtn, setUpdateBtn] = useState(false);
+  const [editBlog, setEditBlog] = useState(null);
   const [searchValue, setSearchValue] = useState("");
+  const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
   const pathName = location.pathname === "/admin-panel/blogs";
@@ -19,7 +25,26 @@ export const Blogs = () => {
   const jwtToken = Cookie.get("jwt");
 
   useEffect(() => {
+    const handleOnlineStatusChange = function () {
+      setIsOnline(true);
+    };
+
+    const handleOfflineStatusChange = function () {
+      setIsOnline(false);
+    };
+
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOfflineStatusChange);
+  });
+
+  const handleNavigateToParent = () => {
+    navigate("/admin-panel/blogs/new-blog-post");
+    setUpdateBtn(false);
+  };
+
+  useEffect(() => {
     const getAllBlogs = async () => {
+      setShowNotification(true);
       try {
         const response = await axios.get(
           "https://techalive.onrender.com/api/v1/blog-post/all-blogs",
@@ -34,15 +59,33 @@ export const Blogs = () => {
 
         setPostedBlogs(data.allBlogs);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          setStatus("warning");
+          navigate("/login");
+        }
+
         console.log(error);
+
+        !isOnline ? setStatus("offline") : null;
       }
     };
 
     getAllBlogs();
   });
 
+  const handleEditBlog = (blog) => {
+    setEditBlog(blog);
+
+    setUpdateBtn(true);
+    navigate("/admin-panel/blogs/new-blog-post");
+  };
+
   return (
     <div className="blogs-container">
+      <Notifications
+        status={status}
+        showNotification={showNotification}
+      />
       <div className="lead-top">
         <h1 className="board-header text-f14">
           {pathName ? "Blog - Dashboard" : "Create new post"}
@@ -61,9 +104,7 @@ export const Blogs = () => {
         <button
           className={pathName ? "parent" : "child"}
           onClick={() => {
-            pathName
-              ? navigate("/admin-panel/blogs/new-blog-post")
-              : navigate(-1);
+            pathName ? handleNavigateToParent() : navigate(-1);
           }}
         >
           {pathName ? (screenSize < 768 ? "+" : "New post +") : "Go back"}
@@ -80,26 +121,29 @@ export const Blogs = () => {
                       .toLowerCase()
                       .includes(searchValue.toLowerCase())
               )
-              .map((blogs, index) => (
+              .map((blog, index) => (
                 <div
                   key={index}
                   className="blog-wrapper"
                 >
                   <img
-                    src={blogs.image}
+                    src={blog.image}
                     alt="blog-image"
                   />
 
                   <div className="server-action">
-                    <i className="pi pi-pencil" />
+                    <i
+                      className="pi pi-pencil"
+                      onClick={() => handleEditBlog(blog)}
+                    />
                     <i className="pi pi-trash" />
                   </div>
 
                   <div className="overlay">
                     <div className="the-blog-contents">
-                      <h2>{blogs.title}</h2>
-                      <p>{blogs.author}</p>
-                      <p>{blogs.createdOn}</p>
+                      <h2>{blog.title}</h2>
+                      <p>{blog.author}</p>
+                      <p>{blog.createdOn}</p>
                       <button>Read post</button>
                     </div>
                   </div>
@@ -110,7 +154,12 @@ export const Blogs = () => {
           <Routes>
             <Route
               path="new-blog-post"
-              element={<NewPost />}
+              element={
+                <NewPost
+                  editBlog={editBlog}
+                  updateBtn={updateBtn}
+                />
+              }
             />
           </Routes>
         )}

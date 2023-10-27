@@ -8,7 +8,7 @@ export const Notifications = ({ status, showNotification }) => {
   let notify;
 
   const thePaths = [
-    "admin-panel/blogs",
+    "/admin-panel/blogs",
     "/admin-panel/products/add-new-product",
     "/admin-panel/products",
   ];

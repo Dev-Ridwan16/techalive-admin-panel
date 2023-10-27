@@ -74,10 +74,9 @@ export const Products = function () {
             },
           }
         );
+
         const { data } = response.data;
         setProductData(data.products);
-
-        // console.log(response.data.image);
 
         setDate();
         switch (response.status) {
@@ -92,11 +91,13 @@ export const Products = function () {
         if (error.response && error.response.status === 401) {
           setStatus("warning");
           setShowNotification(true);
+
           setTimeout(() => {
             navigate("/login");
           }, 5000);
         }
         console.log("Error:", error);
+
         setShowNotification(true);
         !isOnline ? setStatus("offline") : null;
       } finally {

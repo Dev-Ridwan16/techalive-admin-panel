@@ -194,7 +194,7 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .blogs-container .lead-top input {
-    @apply border w-[170px] md:w-[250px] h-[30px] rounded-full px-2 text-f10
+    @apply border outline-none w-[170px] md:w-[250px] h-[30px] rounded-full px-2 text-f10
 }
 
 .blogs-container .lead-top button.parent {

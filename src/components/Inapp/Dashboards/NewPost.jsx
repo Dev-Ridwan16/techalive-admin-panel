@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Cookie from "js-cookie";
@@ -7,13 +7,16 @@ import { Notifications } from "../../../layouts/Notifications";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../../features/loadingSlice";
 
-export default function NewPost() {
+export default function NewPost({ editBlog, updateBtn }) {
   const [disable, setDisable] = useState(true);
   const [blog, setBlog] = useState("");
   const [status, setStatus] = useState("");
   const [showNotification, setShowNotifcation] = useState(false);
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.loading);
+
+  const [editingBlog, setEditingBlog] = useState(editBlog);
+  const [theBlog, setTheBlog] = useState(editBlog ? editBlog.blog : "");
 
   const [blogDetails, setBlogDetails] = useState({
     image: "",
@@ -72,11 +75,83 @@ export default function NewPost() {
         default:
       }
     } catch (error) {
-      if (error.response && error.response.status === 404) {
+      if (error.response && error.response.status === 401) {
         setStatus("warning");
       }
     }
   };
+
+  const handleEditingBlog = (e) => {
+    const { name, value } = e.target;
+    const blogEdited = { ...editingBlog, [name]: value };
+    setEditingBlog(blogEdited);
+
+    const isAnyFieldEmpty = Object.values(blogEdited).some(
+      (field) => typeof field === "string" && field.trim().length < 1
+    );
+
+    setDisable(isAnyFieldEmpty);
+  };
+
+  const handleBlogEdit = (value) => {
+    if (updateBtn && theBlog) {
+      setTheBlog(value);
+
+      const isEditorEmpty = value.trim().length < 100;
+      setDisable(isEditorEmpty);
+    }
+  };
+
+  const theEditedVersion = {
+    ...editingBlog,
+    theBlog,
+  };
+
+  const handleUpdateBlog = async () => {
+    dispatch(setLoading(true));
+    try {
+      const response = await axios.patch(
+        `https://techalive.onrender.com/api/v1/blog-post/${editBlog._id}`,
+        theEditedVersion,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      switch (response.status) {
+        case 200:
+          setShowNotifcation(true);
+          setStatus("success");
+          dispatch(setLoading(false));
+          setEditingBlog({
+            image: "",
+            author: "",
+            title: "",
+          });
+
+          setTheBlog("");
+          break;
+        default:
+      }
+    } catch (error) {
+      setShowNotifcation(true);
+      if (error.response && error.response.status === 401) {
+        setStatus("warning");
+      }
+
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowNotifcation(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [status]);
 
   return (
     <div className="new-post-container">
@@ -95,8 +170,10 @@ export default function NewPost() {
                 type="text"
                 className="img-link"
                 placeholder="Image Link"
-                value={blogDetails.image}
-                onChange={handleBlogDetailChange}
+                value={updateBtn ? editingBlog.image : blogDetails.image}
+                onChange={
+                  updateBtn ? handleEditingBlog : handleBlogDetailChange
+                }
                 required
               />
               <i className="pi pi-link" />
@@ -108,8 +185,10 @@ export default function NewPost() {
                 type="text"
                 className="blog-title"
                 placeholder="Blog Title"
-                value={blogDetails.title}
-                onChange={handleBlogDetailChange}
+                value={updateBtn ? editingBlog.title : blogDetails.title}
+                onChange={
+                  updateBtn ? handleEditingBlog : handleBlogDetailChange
+                }
                 required
               />
               <i className="pi pi-arrow-up" />
@@ -120,8 +199,10 @@ export default function NewPost() {
                 type="text"
                 className="author"
                 placeholder="Author Name"
-                value={blogDetails.author}
-                onChange={handleBlogDetailChange}
+                value={updateBtn ? editingBlog.author : blogDetails.author}
+                onChange={
+                  updateBtn ? handleEditingBlog : handleBlogDetailChange
+                }
                 required
               />
               <i className="pi pi-user" />
@@ -129,20 +210,30 @@ export default function NewPost() {
           </div>
           <div className="img-preview">
             <img
-              src={blogDetails.image}
+              src={updateBtn ? editingBlog.image : blogDetails.image}
               alt=""
             />
           </div>
         </div>
         <button
           className={`post-btn ${disable ? "btn-disable" : ""}`}
-          disabled={disable ? true : false}
-          onClick={handleSubmitBlog}
+          disabled={
+            updateBtn ? (disable ? true : false) : disable ? true : false
+          }
+          onClick={updateBtn ? handleUpdateBlog : handleSubmitBlog}
         >
-          {isLoading ? (
+          {isLoading && !updateBtn ? (
             <p>
               <span>Posting...</span> <i className="pi pi-spin pi-spinner" />
             </p>
+          ) : updateBtn ? (
+            isLoading ? (
+              <p>
+                <span>Updaitng</span> <i className="pi pi-spin pi-spinner" />
+              </p>
+            ) : (
+              "Update Blog"
+            )
           ) : (
             "Post blog"
           )}
@@ -150,8 +241,8 @@ export default function NewPost() {
       </div>
       <ReactQuill
         theme="snow"
-        value={blog}
-        onChange={handleEditorValue}
+        value={updateBtn ? theBlog : blog}
+        onChange={updateBtn ? handleBlogEdit : handleEditorValue}
         className="react-quill-editor"
       />
     </div>
