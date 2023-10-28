@@ -1,0 +1,55 @@
+* {
+    @apply px-[5px] box-border
+}
+
+.blog-post-wrapper {
+    @apply max-w-[90%]
+}
+
+h1.blog-header {
+    @apply text-f25 mb-5
+}
+
+.blog-det {
+    @apply flex flex-row items-center gap-3 mb-5
+}
+
+p.author {
+    @apply bg-black text-white w-fit px-2 h-[25px] flex items-center
+}
+
+img {
+    @apply rounded-md w-[50%] h-[70vh] mb-10
+}
+
+div.blog-content h1 {
+    @apply text-f25
+}
+
+div.blog-content h2 {
+    @apply text-f20
+}
+
+div.blog-content h3 {
+    @apply text-f16
+}
+
+div.blog-content p {
+    @apply ml-2
+}
+
+div.blog-content ol, div.blog-content ul {
+    @apply ml-10
+}
+
+div.blog-content ol li{
+    @apply list-decimal pt-3
+}
+
+div.blog-content ul li {
+    @apply list-[circle] pt-3
+}
+
+div.blog-content a {
+    @apply text-pink
+}

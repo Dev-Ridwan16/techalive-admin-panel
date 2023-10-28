@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { AccountForm } from "./components/AccountForm";
+// import { useParams } from "react-router-dom";
 
 // styles
 import "primeicons/primeicons.css";
 import "./App.css";
+
+// Routes
+import { AccountForm } from "./components/AccountForm";
 import { Route, Routes } from "react-router-dom";
 import { AdminPanel } from "./components/Inapp/AdminPanel";
 import { AddProduct } from "./components/Inapp/Dashboards/AddProduct";
@@ -18,8 +21,10 @@ import { Notifications } from "./layouts/Notifications";
 import { SignupComp } from "./components/AccountForm";
 import { LoginComp } from "./components/AccountForm";
 import NewPost from "./components/Inapp/Dashboards/NewPost";
+import BlogPost from "./layouts/BlogPost";
 
 function App() {
+  // const { postId } = useParams();
   const [isToggle, setIsToggle] = useState(true);
 
   const handleIsToggle = () => {
@@ -29,6 +34,10 @@ function App() {
     <>
       <Notifications />
       <Routes>
+        <Route
+          path="techalive/blog/:blogId"
+          element={<BlogPost />}
+        />
         <Route
           path="/"
           element={<AccountForm />}

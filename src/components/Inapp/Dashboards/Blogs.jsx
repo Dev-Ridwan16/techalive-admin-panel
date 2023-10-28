@@ -182,7 +182,13 @@ export const Blogs = () => {
                         <h2>{blog.title}</h2>
                         <p>{blog.author}</p>
                         <p>{blog.createdOn}</p>
-                        <button>Read post</button>
+                        <button
+                          onClick={() =>
+                            navigate(`/techalive/blog/${blog._id}`)
+                          }
+                        >
+                          Read post
+                        </button>
                       </div>
                     </div>
                   </div>
