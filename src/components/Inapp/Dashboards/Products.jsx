@@ -344,7 +344,7 @@ export const Products = function () {
           ) : null}
           <Routes>
             <Route
-              path="add-ne  w-product"
+              path="add-new-product"
               element={<AddProduct />}
             />
           </Routes>

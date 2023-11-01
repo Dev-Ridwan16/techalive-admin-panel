@@ -1,11 +1,23 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "../Style/layout/BlogPost.css";
+
+const formatDate = (dateString) => {
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    weekday: "short",
+  };
+  return new Date(dateString).toLocaleDateString("en-US", options);
+};
 
 const BlogPost = () => {
   const { blogId } = useParams();
   const [readBlog, setReadBlog] = useState(null);
+  const [otherPosts, setOtherPosts] = useState([]);
+  const [currentPostId, setCurrentPostId] = useState(null);
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -15,6 +27,7 @@ const BlogPost = () => {
         );
 
         const data = response.data.readABlog;
+        setCurrentPostId(data._id);
 
         switch (response.status) {
           case 200:
@@ -28,10 +41,27 @@ const BlogPost = () => {
       }
     };
 
+    const showOtherPosts = async () => {
+      try {
+        const response = await axios.get(
+          `https://techalive.onrender.com/api/v1/blog-post/other-blogs`
+        );
+
+        const data = response.data;
+        setOtherPosts(data.allBlogs);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchBlogPost();
+    showOtherPosts();
   }, [blogId]);
 
   // list all blog beside
+  const otherPostsExcludingCurrent = otherPosts.filter(
+    (otherPost) => otherPost._id !== currentPostId
+  );
 
   return (
     <div className="readingBlog-container">
@@ -49,7 +79,7 @@ const BlogPost = () => {
             </div>
             <div className="blog-det">
               <label htmlFor="">Date:</label>
-              <p className="date">{readBlog.createdOn}</p>
+              <p className="date">{formatDate(readBlog.createdOn)}</p>
             </div>
             <img
               src={readBlog.image}
@@ -63,7 +93,31 @@ const BlogPost = () => {
         )}
       </div>
       <hr />
-      <div></div>
+      <div className="other-posts-container">
+        <div className="steeve">
+          <h3 className="text-f16">Other Posts</h3>
+          {otherPostsExcludingCurrent.map((otherPost) => (
+            <Link to={`/techalive/blog/${otherPost._id}`}>
+              <div className="other-posts-wrapper">
+                <div className="other-posts-content">
+                  <h3>
+                    {otherPost.title.length > 20
+                      ? otherPost.title.slice(0, 20) + "..."
+                      : otherPost.title}
+                  </h3>
+                  <p>{formatDate(otherPost.createdOn)}</p>
+                </div>
+                <div className="other-posts-img">
+                  <img
+                    src={otherPost.image}
+                    alt=""
+                  />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

@@ -78,7 +78,6 @@ export const Blogs = () => {
 
   const handleEditBlog = (blog) => {
     setEditBlog(blog);
-
     setUpdateBtn(true);
     navigate("/admin-panel/blogs/new-blog-post");
   };
@@ -184,7 +183,7 @@ export const Blogs = () => {
                         <p>{blog.createdOn}</p>
                         <button
                           onClick={() =>
-                            navigate(`/techalive/blog/${blog._id}`)
+                            navigate(`/tachalive/blog/${blog._id}`)
                           }
                         >
                           Read post

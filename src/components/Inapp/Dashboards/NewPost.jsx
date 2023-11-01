@@ -16,7 +16,7 @@ export default function NewPost({ editBlog, updateBtn }) {
   const { isLoading } = useSelector((state) => state.loading);
 
   const [editingBlog, setEditingBlog] = useState(editBlog);
-  const [theBlog, setTheBlog] = useState(editBlog ? editBlog.blog : "");
+  const [theBlog, setTheBlog] = useState(updateBtn && editBlog.blog);
 
   const [blogDetails, setBlogDetails] = useState({
     image: "",
@@ -100,31 +100,32 @@ export default function NewPost({ editBlog, updateBtn }) {
   };
 
   const handleBlogEdit = (value) => {
-    if (updateBtn && theBlog) {
-      setTheBlog(value);
+    // if (updateBtn) {
+    setTheBlog(value);
 
-      const isEditorEmpty = value.trim().length < 100;
-      setDisable(isEditorEmpty);
-    }
-  };
-
-  const theEditedVersion = {
-    ...editingBlog,
-    theBlog,
+    const isEditorEmpty = value.trim().length < 100;
+    setDisable(isEditorEmpty);
+    // }
   };
 
   const handleUpdateBlog = async () => {
+    console.log(theBlog);
     dispatch(setLoading(true));
     try {
       const response = await axios.patch(
         `https://techalive.onrender.com/api/v1/blog-post/${editBlog._id}`,
-        theEditedVersion,
+        {
+          ...editingBlog,
+          blog: theBlog,
+        },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
+
+      console.log(theBlog);
 
       switch (response.status) {
         case 200:
@@ -138,6 +139,7 @@ export default function NewPost({ editBlog, updateBtn }) {
           });
 
           setTheBlog("");
+          console.log(theEditedVersion);
           break;
         default:
       }

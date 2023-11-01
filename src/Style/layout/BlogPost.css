@@ -1,55 +1,75 @@
-* {
-    @apply px-[5px] box-border
+.readingBlog-container {
+    @apply flex flex-col lg:flex-row justify-between w-[85%] mx-auto
 }
 
-.blog-post-wrapper {
-    @apply max-w-[90%]
+.readingBlog-container hr {
+    @apply border my-5 lg:h-[50vh] lg:mt-[200px] lg:sticky lg:top-[200px]
 }
 
-h1.blog-header {
+.readingBlog-container .blog-post-wrapper {
+    @apply  lg:max-w-[55%]
+}
+
+.readingBlog-container .blog-post-wrapper h1.blog-header {
     @apply text-f25 mb-5
 }
 
-.blog-det {
+.readingBlog-container .blog-post-wrapper .blog-det {
     @apply flex flex-row items-center gap-3 mb-5
 }
 
-p.author {
+.readingBlog-container .blog-post-wrapper p.author {
     @apply bg-black text-white w-fit px-2 h-[25px] flex items-center
 }
 
-img {
-    @apply rounded-md w-[50%] h-[70vh] mb-10
+.readingBlog-container .blog-post-wrapper img {
+    @apply  w-full h-[20vh] md:h-[30vh] lg:h-[70vh] mb-10 object-cover
 }
 
-div.blog-content h1 {
+.readingBlog-container .blog-post-wrapper div.blog-content h1 {
     @apply text-f25
 }
 
-div.blog-content h2 {
+.readingBlog-container .blog-post-wrapper div.blog-content h2 {
     @apply text-f20
 }
 
-div.blog-content h3 {
+.readingBlog-container .blog-post-wrapper div.blog-content h3 {
     @apply text-f16
 }
 
-div.blog-content p {
-    @apply ml-2
+.readingBlog-container .blog-post-wrapper div.blog-content p {
+    @apply ml-2 leading-[30px]
 }
 
-div.blog-content ol, div.blog-content ul {
+.readingBlog-container .blog-post-wrapper div.blog-content ol, div.blog-content ul {
     @apply ml-10
 }
 
-div.blog-content ol li{
-    @apply list-decimal pt-3
+.readingBlog-container .blog-post-wrapper div.blog-content ol li{
+    @apply list-decimal pb-5
 }
 
-div.blog-content ul li {
-    @apply list-[circle] pt-3
+.readingBlog-container .blog-post-wrapper div.blog-content ul li {
+    @apply list-disc pb-5
 }
 
-div.blog-content a {
+.readingBlog-container .blog-post-wrapper div.blog-content a {
     @apply text-pink
+}
+
+.readingBlog-container .other-posts-container {
+    @apply lg:w-[30%] lg:mt-[100px] 
+}
+
+.readingBlog-container .other-posts-container .steeve {
+    @apply lg:sticky lg:top-[100px]
+}
+
+.readingBlog-container .other-posts-container .steeve .other-posts-wrapper {
+    @apply flex flex-row justify-between items-center mt-5
+}
+
+.readingBlog-container .other-posts-container .steeve .other-posts-wrapper .other-posts-img img {
+    @apply w-[200px] h-[100px] object-cover
 }

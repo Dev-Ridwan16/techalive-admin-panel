@@ -206,11 +206,19 @@ div .workers-container table tbody tr:nth-child(even) {
 }
 
 .blogs-container .slide-board {
-    @apply  mt-2  border-t p-5 
+    @apply  mt-2  border-t p-5
 }
 
 .blogs-container .slide-board .show-posted-blogs {
-    @apply flex flex-row flex-wrap gap-2 mt-2 overflow-scroll
+    @apply flex flex-row flex-wrap gap-2 mt-2 h-[420px] overflow-y-scroll
+}
+
+.blogs-container .slide-board .show-posted-blogs::-webkit-scrollbar {
+    @apply w-[5px]
+}
+
+.blogs-container .slide-board .show-posted-blogs::-webkit-scrollbar-thumb {
+    @apply bg-[#d3d2d298] rounded-full
 }
 
 .blogs-container .slide-board .show-posted-blogs .blog-wrapper {
