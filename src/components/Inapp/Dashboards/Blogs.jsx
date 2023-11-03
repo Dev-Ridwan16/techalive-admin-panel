@@ -183,7 +183,7 @@ export const Blogs = () => {
                         <p>{blog.createdOn}</p>
                         <button
                           onClick={() =>
-                            navigate(`/tachalive/blog/${blog._id}`)
+                            navigate(`/techalive/blog/${blog._id}`)
                           }
                         >
                           Read post

@@ -316,3 +316,89 @@ div .workers-container table tbody tr:nth-child(even) {
 .new-post-container .react-quill-editor {
     @apply max-w-[100%] max-h-[30vh] h-[30vh]
 }
+
+/* -------------- APPOINTMENT STYLE HERE ------------------ */
+
+.appointment-container {
+    /* @apply  */
+}
+
+.marquee {
+    @apply w-[80%] mx-auto my-5
+}
+
+.appointment-container input#search {
+    @apply border outline-none rounded-full w-[250px] h-[30px] px-3 mb-3
+}
+
+.appointment-container input#search::placeholder {
+    @apply text-f10
+}
+
+.appointment-container table.appointment-table {
+    @apply  w-full text-center 
+}
+
+
+.appointment-container table.appointment-table thead tr {
+    @apply border 
+}
+
+.appointment-container table.appointment-table thead tr th {
+    @apply p-3 
+}
+
+
+.appointment-container table.appointment-table tbody tr:nth-child(odd) {
+    @apply bg-[#00000007]
+}
+
+.appointment-container table.appointment-table tbody tr td {
+    @apply py-3 relative
+}
+
+
+
+.appointment-container table.appointment-table tbody tr td .read-message {
+    @apply bg-[#fff] absolute z-50 min-h-[50px] max-w-[250px] rounded shadow-lg p-2 text-left
+}
+
+.appointment-container table.appointment-table tbody tr td .pending {
+    @apply text-amber-300
+}
+
+.appointment-container table.appointment-table tbody tr td .marked {
+    @apply text-green-300
+}
+
+.appoint-analytics-container {
+    @apply flex flex-col md:flex-row items-center justify-between gap-5 md:gap-0
+}
+
+.appoint-analytics-container .analysis-wrapper {
+    @apply w-full md:w-[30%] h-[100px] shadow-sm flex flex-col items-center gap-5 py-3 rounded-md
+}
+
+.appoint-analytics-container .analysis-wrapper:nth-child(1) {
+    @apply bg-gradient-to-tr from-[#ee4f9e] to-[#cb70e7]
+}
+
+.appoint-analytics-container .analysis-wrapper:nth-child(2) {
+    @apply bg-gradient-to-tr from-[#6c4fee] to-[#70e798]
+}
+
+.appoint-analytics-container .analysis-wrapper:nth-child(3) {
+    @apply bg-gradient-to-tr from-[#ee4f4f] to-[#e5e770]
+}
+
+.appoint-analytics-container .analysis-wrapper h1, .appoint-analytics-container .analysis-wrapper h3 {
+    @apply text-white
+}
+
+.appoint-analytics-container .analysis-wrapper h1 {
+    @apply text-f16 md:text-f20 lg:text-f25 
+}
+
+.appoint-analytics-container .analysis-wrapper h3 {
+    @apply md:text-f12 lg:text-f16
+}

@@ -32,7 +32,7 @@ export const AdminPanel = () => {
       <Sidebar handleLogout={handleLogout} />
 
       {logOutLoadinng && <LogoutModal />}
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full mb-10">
         <Headbar />
         <Board />
       </div>
