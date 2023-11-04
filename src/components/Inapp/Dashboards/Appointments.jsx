@@ -57,6 +57,7 @@ export const Appointments = () => {
         setIsCheck(new Array(data.appointments.length).fill(false));
 
         setAppointments(data.appointments);
+        setBookingDate(data.appointments.bookedOn);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           navigate("/login");
@@ -65,13 +66,40 @@ export const Appointments = () => {
     })();
   }, []);
 
-  const handleCheck = (index) => {
+  const cancleAppointment = async (id) => {
+    try {
+      await axios.delete(
+        `https://techalive.onrender.com/api/v1/appointment/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCheck = (index, appointment) => {
     const newCheck = [...isCheck];
 
     newCheck[index] = !newCheck[index];
 
     setIsCheck(newCheck);
+
+    if (newCheck[index]) {
+      // If the checkbox is checked, set a timeout to cancel the appointment after 10 seconds
+      const timeout = setTimeout(() => {
+        cancleAppointment(appointment._id);
+        clearTimeout(timeout); // Clear the timeout to prevent it from firing again if the checkbox is unchecked
+      }, (60000 * 30) / 1000);
+
+      setAppointments(appointment);
+    }
   };
+
+  console.log();
 
   const noOfPending = isCheck.filter((checked) => !checked).length;
   const noOfMarked = isCheck.filter((checked) => checked).length;
@@ -139,7 +167,7 @@ export const Appointments = () => {
                     <input
                       type="checkbox"
                       checked={isCheck[index]}
-                      onChange={() => handleCheck(index)}
+                      onChange={() => handleCheck(index, appointment)}
                     />
                   </td>
                   <td>{appointment.name}</td>
