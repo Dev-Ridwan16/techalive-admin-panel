@@ -54,7 +54,12 @@ export const Appointments = () => {
 
         const data = response.data;
 
-        setIsCheck(new Array(data.appointments.length).fill(false));
+        const checkedStatus = data.appointments.map(
+          (appointment) => appointment.checked || false
+        );
+
+        // setIsCheck(new Array(data.appointments.length).fill(false));
+        setIsCheck(checkedStatus);
 
         setAppointments(data.appointments);
         setBookingDate(data.appointments.bookedOn);
@@ -81,25 +86,37 @@ export const Appointments = () => {
     }
   };
 
-  const handleCheck = (index, appointment) => {
+  const handleCheck = async (index, appointment) => {
     const newCheck = [...isCheck];
 
     newCheck[index] = !newCheck[index];
 
     setIsCheck(newCheck);
 
+    try {
+      await axios.patch(
+        `https://techalive.onrender.com/api/v1/appointment/${appointment._id}`,
+        {
+          checked: newCheck[index],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
     if (newCheck[index]) {
-      // If the checkbox is checked, set a timeout to cancel the appointment after 10 seconds
       const timeout = setTimeout(() => {
         cancleAppointment(appointment._id);
-        clearTimeout(timeout); // Clear the timeout to prevent it from firing again if the checkbox is unchecked
-      }, (60000 * 30) / 1000);
+      }, 30 * 60 * 1000);
 
-      setAppointments(appointment);
+      return () => clearTimeout(timeout);
     }
   };
-
-  console.log();
 
   const noOfPending = isCheck.filter((checked) => !checked).length;
   const noOfMarked = isCheck.filter((checked) => checked).length;
