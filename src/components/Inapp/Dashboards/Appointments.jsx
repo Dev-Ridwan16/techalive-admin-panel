@@ -109,10 +109,12 @@ export const Appointments = () => {
       console.log(error);
     }
 
+    console.log(appointment._id);
+
     if (newCheck[index]) {
       const timeout = setTimeout(() => {
         cancleAppointment(appointment._id);
-      }, 30 * 60 * 1000);
+      }, 1800000);
 
       return () => clearTimeout(timeout);
     }
