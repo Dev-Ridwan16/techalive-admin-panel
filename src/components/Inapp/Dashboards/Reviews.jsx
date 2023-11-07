@@ -53,7 +53,8 @@ export const Reviews = () => {
       let number = whatsappMessanger.PHONE_NUMBER;
       let message = whatsappMessanger.WHATSAPP_MESSAGE;
 
-      const whatsappURL = `https://wa.me/${number}?text=${encodeURI(message)}`;
+      // const whatsappURL = `https://wa.me/${number}?text=${encodeURI(message)}`;
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${number}&text=${message}`;
       const existingWhatsAppWindow = window.open(whatsappURL, "_blank");
 
       if (existingWhatsAppWindow) {
