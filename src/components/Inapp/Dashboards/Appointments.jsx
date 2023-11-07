@@ -120,6 +120,8 @@ export const Appointments = () => {
     }
   };
 
+  // console.log(30 * 60 * 1000);
+
   const noOfPending = isCheck.filter((checked) => !checked).length;
   const noOfMarked = isCheck.filter((checked) => checked).length;
 
@@ -181,7 +183,7 @@ export const Appointments = () => {
                       .includes(searchValue.toLowerCase())
               )
               .map((appointment, index) => (
-                <tr>
+                <tr key={index}>
                   <td>
                     <input
                       type="checkbox"
