@@ -24,8 +24,6 @@ function formatTime(time24Hour) {
   const twelveHour = hr % 12 || 12;
 
   return `${twelveHour} : ${minute} (${unit})`;
-
-  console.log(hr);
 }
 
 export const Appointments = () => {
@@ -62,7 +60,6 @@ export const Appointments = () => {
         setIsCheck(checkedStatus);
 
         setAppointments(data.appointments);
-        setBookingDate(data.appointments.bookedOn);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           navigate("/login");
@@ -71,7 +68,7 @@ export const Appointments = () => {
     })();
   }, []);
 
-  const cancleAppointment = async (id) => {
+  const deleteAppointment = async (id) => {
     try {
       await axios.delete(
         `https://techalive.onrender.com/api/v1/appointment/${id}`,
@@ -84,6 +81,28 @@ export const Appointments = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const calculatePendingAppointmentDelay = (appointment) => {
+    const scheduleTime = new Date(`${appointment.date} ${appointment.time}`);
+
+    const currentTime = new Date();
+
+    const timeDifference = scheduleTime - currentTime;
+
+    return timeDifference;
+  };
+
+  const scheduleAppointmentDeletion = (appointment, index) => {
+    const delay = isCheck[index]
+      ? import.meta.env.REACT_APP_MARKED_APPOINTMENT_DELETE_TIME * 60 * 1000
+      : calculatePendingAppointmentDelay(appointment);
+
+    const timeout = setTimeout(() => {
+      deleteAppointment(appointment._id);
+    }, delay);
+
+    return () => clearTimeout(timeout);
   };
 
   const handleCheck = async (index, appointment) => {
@@ -99,6 +118,7 @@ export const Appointments = () => {
         {
           checked: newCheck[index],
         },
+
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -109,18 +129,8 @@ export const Appointments = () => {
       console.log(error);
     }
 
-    console.log(appointment._id);
-
-    if (newCheck[index]) {
-      const timeout = setTimeout(() => {
-        cancleAppointment(appointment._id);
-      }, 1800000);
-
-      return () => clearTimeout(timeout);
-    }
+    if (newCheck[index]) scheduleAppointmentDeletion(appointment, index);
   };
-
-  // console.log(30 * 60 * 1000);
 
   const noOfPending = isCheck.filter((checked) => !checked).length;
   const noOfMarked = isCheck.filter((checked) => checked).length;
@@ -138,8 +148,8 @@ export const Appointments = () => {
           behavior=""
           direction=""
         >
-          Marked appointment will be be deleted after 30 minutes and Pending
-          appointment will be cancel after 24 hours
+          Marked appointments will be deleted after 30 minutes, and pending
+          appointments will be canceled after the scheduled time.
         </marquee>
       </div>
       <div className="appointment-container">
