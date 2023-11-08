@@ -128,12 +128,12 @@ export const Reviews = () => {
         </form>
 
         <div className=" md:w-[280px] lg:w-[400px]">
-          <div className="flex flex-row justify-between items-center border w-[250px] h-[30px]">
+          <div className="flex flex-row justify-between items-center border md:[250px] lg:w-[300px] h-[30px]">
             <input
               readOnly
               id="copyLink"
-              value="Link to review site"
-              className="pl-3 outline-none"
+              value="techalive-inc.com/review/aehtlcvei"
+              className="pl-3 outline-none w-full"
             />
             <i
               className="pi pi-copy bg-[#ddd] h-full w-[30px] grid place-content-center"
