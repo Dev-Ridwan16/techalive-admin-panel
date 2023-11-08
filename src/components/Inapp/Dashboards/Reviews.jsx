@@ -120,9 +120,10 @@ export const Reviews = () => {
           </div>
           <button
             type="submit"
-            className="border border-green-500 text-green-500 w-[200px] h-[40px] mx-auto rounded-full"
+            className="border border-green-500 text-green-500 w-[200px] h-[40px] mx-auto rounded-full flex items-center justify-center gap-3"
           >
-            Send Request
+            <i className="pi pi-whatsapp text-[16px]" />{" "}
+            <span>Send Request</span>
           </button>
         </form>
 

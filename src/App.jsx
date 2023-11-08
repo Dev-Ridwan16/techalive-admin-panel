@@ -22,6 +22,7 @@ import { SignupComp } from "./components/AccountForm";
 import { LoginComp } from "./components/AccountForm";
 import NewPost from "./components/Inapp/Dashboards/NewPost";
 import BlogPost from "./layouts/BlogPost";
+import ReviewSite from "./layouts/ReviewSite";
 
 function App() {
   // const { postId } = useParams();
@@ -50,6 +51,10 @@ function App() {
               handleIsToggle={handleIsToggle}
             />
           }
+        />
+        <Route
+          path="review"
+          element={<ReviewSite />}
         />
         <Route
           path="login"
