@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Cookie from "js-cookie";
+import React, { useState, useEffect } from "react"
+import axios from "axios"
+import Cookie from "js-cookie"
 
-import { AddProduct } from "./AddProduct";
-import EditingModal from "../../../layouts/EditingModal";
-import { Notifications } from "../../../layouts/Notifications";
-import { DeleteConfirmation } from "../../../layouts/DeleteConfirmation";
+import { AddProduct } from "./AddProduct"
+import EditingModal from "../../../layouts/EditingModal"
+import { Notifications } from "../../../layouts/Notifications"
+import { DeleteConfirmation } from "../../../layouts/DeleteConfirmation"
 
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom"
 
-import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../../features/loadingSlice";
+import { useDispatch, useSelector } from "react-redux"
+import { setLoading } from "../../../features/loadingSlice"
 
 // Date formatter javascript function
 const formatDate = (dateString) => {
@@ -19,51 +19,51 @@ const formatDate = (dateString) => {
     month: "short",
     day: "numeric",
     weekday: "short",
-  };
-  return new Date(dateString).toLocaleDateString("en-US", options);
-};
+  }
+  return new Date(dateString).toLocaleDateString("en-US", options)
+}
 
 export const Products = function () {
-  const isTablet = window.innerWidth >= 768;
-  const navigate = useNavigate();
-  const [status, setStatus] = useState("");
-  const [showNotification, setShowNotification] = useState(false);
-  const [pathnameChange, setPathnameChange] = useState(true);
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const [mLoad, setMLoad] = useState(false); //For auto refresh
-  const [searchProduct, setSearchProduct] = useState("");
-  const [productData, setProductData] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [popup, setPopup] = useState(false);
-  const [pollingInterval, setPollingInterval] = useState(5000);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const { isLoading } = useSelector((state) => state.loading);
-  const dispatch = useDispatch();
+  const isTablet = window.innerWidth >= 768
+  const navigate = useNavigate()
+  const [status, setStatus] = useState("")
+  const [showNotification, setShowNotification] = useState(false)
+  const [pathnameChange, setPathnameChange] = useState(true)
+  const [openConfirm, setOpenConfirm] = useState(false)
+  const [mLoad, setMLoad] = useState(false) //For auto refresh
+  const [searchProduct, setSearchProduct] = useState("")
+  const [productData, setProductData] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [popup, setPopup] = useState(false)
+  const [pollingInterval, setPollingInterval] = useState(5000)
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const { isLoading } = useSelector((state) => state.loading)
+  const dispatch = useDispatch()
 
   const handleNavigate = function () {
-    navigate("/admin-panel/products/add-new-product");
-    setPathnameChange(false);
-  };
+    navigate("/admin-panel/products/add-new-product")
+    setPathnameChange(false)
+  }
 
   useEffect(() => {
     const handleOnlineStatusChange = function () {
-      setIsOnline(true);
-    };
+      setIsOnline(true)
+    }
 
     const handleOfflineStatusChange = function () {
-      setIsOnline(false);
-    };
+      setIsOnline(false)
+    }
 
-    window.addEventListener("online", handleOnlineStatusChange);
-    window.addEventListener("offline", handleOfflineStatusChange);
-  });
+    window.addEventListener("online", handleOnlineStatusChange)
+    window.addEventListener("offline", handleOfflineStatusChange)
+  })
 
-  const jwtToken = Cookie.get("jwt");
+  const jwtToken = Cookie.get("jwt")
 
   // get all products
   useEffect(() => {
     const getProducts = async () => {
-      dispatch(setLoading(true));
+      dispatch(setLoading(true))
 
       try {
         const response = await axios.get(
@@ -73,37 +73,37 @@ export const Products = function () {
               Authorization: `Bearer ${jwtToken}`,
             },
           }
-        );
+        )
 
-        const { data } = response.data;
-        setProductData(data.products);
+        const { data } = response.data
+        setProductData(data.products)
 
-        setDate();
+        setDate()
         switch (response.status) {
           case 200:
-            dispatch(setLoading(false));
-            break;
+            dispatch(setLoading(false))
+            break
           default:
         }
 
-        setDate(newDate.toLocaleDateString("en-US", options));
+        setDate(newDate.toLocaleDateString("en-US", options))
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          setStatus("warning");
-          setShowNotification(true);
+          setStatus("warning")
+          setShowNotification(true)
 
           setTimeout(() => {
-            navigate("/login");
-          }, 5000);
+            navigate("/login")
+          }, 5000)
         }
-        console.log("Error:", error);
+        console.log("Error:", error)
 
-        setShowNotification(true);
-        !isOnline ? setStatus("offline") : null;
+        setShowNotification(true)
+        !isOnline ? setStatus("offline") : null
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setLoading(false))
       }
-    };
+    }
 
     // getProducts();
 
@@ -111,13 +111,13 @@ export const Products = function () {
       getProducts,
       pollingInterval,
       setShowNotification(false)
-    );
+    )
 
-    return () => clearInterval(interval);
-  }, [productData]);
+    return () => clearInterval(interval)
+  }, [productData])
 
   const handleDeleteAll = async () => {
-    setMLoad(true);
+    setMLoad(true)
 
     try {
       const result = await axios.delete(
@@ -127,61 +127,61 @@ export const Products = function () {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      );
+      )
 
-      setMLoad(false);
+      setMLoad(false)
 
       switch (result.status) {
         case 204:
-          setShowNotification(true);
-          setStatus("deleted");
-          setOpenConfirm(false);
-          break;
+          setShowNotification(true)
+          setStatus("deleted")
+          setOpenConfirm(false)
+          break
         default:
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setStatus("warning");
-        setShowNotification(true);
+        setStatus("warning")
+        setShowNotification(true)
         setTimeout(() => {
-          navigate("/login");
-        }, 5000);
+          navigate("/login")
+        }, 5000)
       } else if (error.response && error.response.status === 403) {
-        setStatus("info");
-        setShowNotification(true);
+        setStatus("info")
+        setShowNotification(true)
       }
-      console.log("Error", error);
-      setShowNotification(true);
-      !isOnline ? setStatus(true) : null;
-      dispatch(setLoading(false));
+      console.log("Error", error)
+      setShowNotification(true)
+      !isOnline ? setStatus(true) : null
+      dispatch(setLoading(false))
     } finally {
-      setMLoad(false);
+      setMLoad(false)
     }
-  };
+  }
 
   useEffect(() => {
     const interval = setTimeout(function () {
-      setShowNotification(false);
-    }, 5000);
+      setShowNotification(false)
+    }, 5000)
 
-    return () => clearInterval(interval);
-  }, [status]);
+    return () => clearInterval(interval)
+  }, [status])
 
   const closeConfirm = function () {
-    setOpenConfirm(false);
-  };
+    setOpenConfirm(false)
+  }
 
   /* --- Editing specific product */
 
   const handleEditProduct = (product) => {
-    setPopup(true);
-    setSelectedProduct(product);
-    console.log(product);
-  };
+    setPopup(true)
+    setSelectedProduct(product)
+    console.log(product)
+  }
 
   const closeEditModal = () => {
-    setPopup(false);
-  };
+    setPopup(false)
+  }
 
   /* --- Delete specific product */
   const handleDeleteProduct = async (product) => {
@@ -193,17 +193,17 @@ export const Products = function () {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      );
+      )
 
       switch (response.status) {
         case 204:
-          setStatus("deleted");
-          setShowNotification(true);
-          break;
+          setStatus("deleted")
+          setShowNotification(true)
+          break
         default:
       }
     } catch (error) {}
-  };
+  }
 
   return (
     <div className="product-page">
@@ -309,7 +309,10 @@ export const Products = function () {
                       .map((product, index) => (
                         <tr key={index}>
                           <td>
-                            <img src={`/img/products/${product.image}`} />
+                            <img
+                              src={product.image}
+                              className="w-[60px] h-[60px]"
+                            />
                             {/* <img src={`${product.image}`} /> */}
                           </td>
                           <td>{product.name}</td>
@@ -351,5 +354,5 @@ export const Products = function () {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

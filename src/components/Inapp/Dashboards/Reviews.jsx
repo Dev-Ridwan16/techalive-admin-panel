@@ -132,7 +132,7 @@ export const Reviews = () => {
             <input
               readOnly
               id="copyLink"
-              value="techalive-inc.com/review/aehtlcvei"
+              value="techalive-inc.app/review/aehtlcvei"
               className="pl-3 outline-none w-full"
             />
             <i
