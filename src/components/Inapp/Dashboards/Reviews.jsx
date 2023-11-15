@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 export const Reviews = () => {
   const [whatsappMessanger, setWhatsappMessanger] = useState({
     PHONE_NUMBER: "",
     WHATSAPP_MESSAGE: "",
-  });
+  })
 
   const [fieldError, setFieldError] = useState({
     PHONE_NUMBER: "",
     WHATSAPP_MESSAGE: "",
-  });
+  })
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
-    setWhatsappMessanger({ ...whatsappMessanger, [name]: value });
+    setWhatsappMessanger({ ...whatsappMessanger, [name]: value })
 
     setFieldError({
       ...fieldError,
@@ -24,61 +24,61 @@ export const Reviews = () => {
               name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
             } is required`
           : "",
-    });
-  };
+    })
+  }
 
   const validateForm = () => {
-    const newError = {};
+    const newError = {}
 
-    let isValid = true;
+    let isValid = true
 
     Object.entries(whatsappMessanger).forEach(([fieldName, fieldValue]) => {
       if (fieldValue.trim() === "") {
         newError[fieldName] = `${
           fieldName.charAt(0).toUpperCase() + fieldName.slice(1).toLowerCase()
-        } is required`;
+        } is required`
       }
-      isValid = false;
-    });
+      isValid = false
+    })
 
-    setFieldError(newError);
+    setFieldError(newError)
 
-    return isValid;
-  };
+    return isValid
+  }
 
   const handleSendRequest = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!validateForm()) {
-      let number = whatsappMessanger.PHONE_NUMBER;
-      let message = whatsappMessanger.WHATSAPP_MESSAGE;
+      let number = whatsappMessanger.PHONE_NUMBER
+      let message = whatsappMessanger.WHATSAPP_MESSAGE
 
       // const whatsappURL = `https://wa.me/${number}?text=${encodeURI(message)}`;
-      const whatsappURL = `https://api.whatsapp.com/send?phone=${number}&text=${message}`;
-      const existingWhatsAppWindow = window.open(whatsappURL, "_blank");
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${number}&text=${message}`
+      const existingWhatsAppWindow = window.open(whatsappURL, "_blank")
 
       if (existingWhatsAppWindow) {
         // If an existing window was found, focus on it
-        existingWhatsAppWindow.focus();
+        existingWhatsAppWindow.focus()
       } else {
         // If no existing window was found, open a new one
-        window.open(whatsappURL, "_blank");
+        window.open(whatsappURL, "_blank")
       }
       // console.log("opened");
     }
-  };
+  }
 
   const handleCopyToClipBoard = () => {
-    const inputElement = document.querySelector("#copyLink");
+    const inputElement = document.querySelector("#copyLink")
 
-    inputElement.select();
+    inputElement.select()
 
-    document.execCommand("copy");
+    document.execCommand("copy")
 
-    inputElement.setSelectionRange(0, 0);
+    inputElement.setSelectionRange(0, 0)
 
-    alert("Copied to Clipboard");
-  };
+    alert("Copied to Clipboard")
+  }
 
   return (
     <div>
@@ -132,7 +132,7 @@ export const Reviews = () => {
             <input
               readOnly
               id="copyLink"
-              value="techalive-inc.app/review/aehtlcvei"
+              value="techalive-inc.vercel.app/review/aehtlcvei"
               className="pl-3 outline-none w-full"
             />
             <i
@@ -143,5 +143,5 @@ export const Reviews = () => {
         </div>
       </section>
     </div>
-  );
-};
+  )
+}

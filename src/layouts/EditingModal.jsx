@@ -1,103 +1,103 @@
-import React, { useRef, useState, useEffect } from "react";
-import axios from "axios";
-import "../Style/layout/EditingModal.css";
-import { Notifications } from "./Notifications";
-import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../features/loadingSlice";
-import Cookie from "js-cookie";
+import React, { useRef, useState, useEffect } from "react"
+import axios from "axios"
+import "../Style/layout/EditingModal.css"
+import { Notifications } from "./Notifications"
+import { useDispatch, useSelector } from "react-redux"
+import { setLoading } from "../features/loadingSlice"
+import Cookie from "js-cookie"
 
 export default function EditingModal({
   selectedProduct,
   closeEditModal,
   popup,
 }) {
-  const [editForm, setEditForm] = useState(selectedProduct);
-  const [imageName, setImageName] = useState("");
-  const [status, setStatus] = useState("");
-  const [showNotification, setShowNotification] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
-  const imageRef = useRef(null);
-  const dispatch = useDispatch();
-  const { isloading } = useSelector((state) => state.loading);
-  const jwtToken = Cookie.get("jwt");
+  const [editForm, setEditForm] = useState(selectedProduct)
+  const [imageName, setImageName] = useState("")
+  const [status, setStatus] = useState("")
+  const [showNotification, setShowNotification] = useState(false)
+  const [imagePreview, setImagePreview] = useState(null)
+  const imageRef = useRef(null)
+  const dispatch = useDispatch()
+  const { isloading } = useSelector((state) => state.loading)
+  const jwtToken = Cookie.get("jwt")
 
   const handleImageSelect = () => {
-    imageRef.current.click();
-  };
+    imageRef.current.click()
+  }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setEditForm({
       ...editForm,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
 
     if (file) {
-      setImageName(file.name);
+      setImageName(file.name)
     }
 
     if (file.type.startsWith("image/")) {
-      const previewURL = URL.createObjectURL(file);
-      setImagePreview(previewURL);
+      const previewURL = URL.createObjectURL(file)
+      setImagePreview(previewURL)
     } else {
-      setImagePreview(null);
+      setImagePreview(null)
     }
-  };
+  }
 
   const handleSubmitProductUpdate = async (e) => {
-    e.preventDefault();
-    dispatch(setLoading(true));
+    e.preventDefault()
+    dispatch(setLoading(true))
 
-    // const formData = new FormData();
+    const formData = new FormData()
 
-    // if (imageRef.current.files[0]) {
-    //   formData.append("image", imageRef.current.files[0]);
-    // }
+    if (imageRef.current.files[0]) {
+      formData.append("image", imageRef.current.files[0])
+    }
 
-    // formData.append("name", editForm.name);
-    // formData.append("price", editForm.price);
-    // formData.append("category", editForm.category);
-    // formData.append("description", editForm.description);
+    formData.append("name", editForm.name)
+    formData.append("price", editForm.price)
+    formData.append("category", editForm.category)
+    formData.append("description", editForm.description)
     try {
       const response = await axios.patch(
         `https://techalive.onrender.com/api/v1/product/${selectedProduct._id}`,
-        editForm,
+        formData,
         {
           headers: {
-            // "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      );
+      )
 
-      console.log("Response", response.data);
-      console.log(editForm);
+      console.log("Response", response.data)
+      console.log(editForm)
 
       switch (response.status) {
         case 200:
-          setStatus("success");
-          setShowNotification(true);
-          dispatch(setLoading(false));
-          break;
+          setStatus("success")
+          setShowNotification(true)
+          dispatch(setLoading(false))
+          break
         default:
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   // close notification
   useEffect(() => {
     const interval = setInterval(function () {
-      setShowNotification(false);
-    }, 5000);
+      setShowNotification(false)
+    }, 5000)
 
-    return () => clearInterval(interval);
-  }, [status]);
+    return () => clearInterval(interval)
+  }, [status])
 
   return (
     <div className="modal-overlay">
@@ -187,5 +187,5 @@ export default function EditingModal({
         </form>
       </div>
     </div>
-  );
+  )
 }
