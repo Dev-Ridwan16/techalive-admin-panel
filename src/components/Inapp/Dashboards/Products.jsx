@@ -5,7 +5,10 @@ import Cookie from "js-cookie"
 import { AddProduct } from "./AddProduct"
 import EditingModal from "../../../layouts/EditingModal"
 import { Notifications } from "../../../layouts/Notifications"
-import { DeleteConfirmation } from "../../../layouts/DeleteConfirmation"
+import {
+  DeleteConfirmation,
+  DeleteSingleConfirmation,
+} from "../../../layouts/DeleteConfirmation"
 
 import { Routes, Route, useNavigate } from "react-router-dom"
 
@@ -34,6 +37,7 @@ export const Products = function () {
   const [searchProduct, setSearchProduct] = useState("")
   const [productData, setProductData] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [selectedProductName, setSelectedProductName] = useState("")
   const [popup, setPopup] = useState(false)
   const [pollingInterval, setPollingInterval] = useState(5000)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
@@ -176,15 +180,29 @@ export const Products = function () {
   const handleEditProduct = (product) => {
     setPopup(true)
     setSelectedProduct(product)
-    console.log(product)
   }
 
   const closeEditModal = () => {
     setPopup(false)
   }
 
+  const handleDeleteConfirm = (product) => {
+    setOpenConfirm(true)
+
+    setSelectedProduct((prevProduct) => {
+      console.log("Selected Product before update:", prevProduct)
+
+      return product
+    })
+
+    console.log("Selected Product after update:", selectedProduct)
+
+    setSelectedProductName(product.name)
+  }
+
   /* --- Delete specific product */
   const handleDeleteProduct = async (product) => {
+    setMLoad(true)
     try {
       const response = await axios.delete(
         `https://techalive.onrender.com/api/v1/product/${product._id}`,
@@ -199,6 +217,8 @@ export const Products = function () {
         case 204:
           setStatus("deleted")
           setShowNotification(true)
+          setMLoad(false)
+          setOpenConfirm(false)
           break
         default:
       }
@@ -242,12 +262,23 @@ export const Products = function () {
                 showNotification={showNotification}
               />
               {openConfirm && (
-                <DeleteConfirmation
-                  handleDeleteAll={handleDeleteAll}
+                // <DeleteConfirmation
+                //   handleDeleteAll={handleDeleteAll}
+                //   closeConfirm={closeConfirm}
+                //   mLoad={mLoad}
+                // />
+
+                <DeleteSingleConfirmation
+                  handleDeleteProduct={() => {
+                    handleDeleteProduct(selectedProduct)
+                    console.log(selectedProduct)
+                  }}
                   closeConfirm={closeConfirm}
                   mLoad={mLoad}
+                  productName={selectedProductName}
                 />
               )}
+
               <div className="flex flex-row item-center justify-between">
                 <button
                   className={`w-[50px] md:w-[150px] h-[30px] bg-grey bg-opacity-10 rounded`}
@@ -333,7 +364,10 @@ export const Products = function () {
                               <li onClick={() => handleEditProduct(product)}>
                                 <i className="pi pi-pencil text-green-600"></i>
                               </li>
-                              <li onClick={() => handleDeleteProduct(product)}>
+                              <li
+                                // onClick={() => handleDeleteProduct(product)}
+                                onClick={() => handleDeleteConfirm(product)}
+                              >
                                 <i className="pi pi-trash text-red"></i>
                               </li>
                             </ul>

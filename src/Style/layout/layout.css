@@ -24,7 +24,7 @@
 }
 
 .confirm-del-container .confirmation p {
-  @apply py-3
+  @apply py-3 h-[40px]
 } 
 
 .confirm-del-container .confirmation .confirm-btns {
