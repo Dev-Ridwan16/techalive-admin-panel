@@ -27,7 +27,10 @@ const ProfileCard = ({ closeCard, showCard }) => {
 
           <button
             className="bg-pink text-[#fff] w-full h-[25px] rounded mt-10"
-            onClick={() => navigate("/admin-panel/me")}
+            onClick={() => {
+              navigate("/admin-panel/me")
+              closeCard()
+            }}
           >
             View Profile
           </button>

@@ -363,6 +363,7 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
             // console.log(jwtToken);
             console.log(response)
             dispatch(setUser(response.data.user))
+
             console.log(response.data.user)
             setShowNotification(true)
             setStatus("success")

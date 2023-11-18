@@ -80,7 +80,7 @@ export const Headbar = () => {
           <i className="pi pi-search absolute left-[100%] top-0 translate-x-[-200%] translate-y-[10px] text-gray-300" />
         </div>
         <div
-          className="flex items-center justify-between w-[100px] cursor-pointer"
+          className="flex items-center justify-between cursor-pointer"
           onClick={handleShowCard}
         >
           <img
@@ -88,7 +88,9 @@ export const Headbar = () => {
             alt=""
             className="w-[30px] h-[30px] rounded-full"
           />
-          <span>{user.name}</span>
+          <span>
+            {user.name.length > 15 ? user.name.slice(0, 16) + "..." : user.name}
+          </span>
           <i className="pi pi-angle-down" />
         </div>
       </div>
