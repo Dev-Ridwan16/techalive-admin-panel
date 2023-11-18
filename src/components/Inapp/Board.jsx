@@ -1,23 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { overview_total } from "../../../default-api";
+import React, { useState, useEffect, useRef } from "react"
+import { Route, Routes, useNavigate } from "react-router-dom"
+import { overview_total } from "../../../default-api"
 
-import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../features/loadingSlice";
+import { useDispatch, useSelector } from "react-redux"
+import { setLoading } from "../../features/loadingSlice"
 
-import axios from "axios";
-import Cookie from "js-cookie";
+import axios from "axios"
+import Cookie from "js-cookie"
 
-import { Notifications } from "../../layouts/Notifications";
-import { DeleteConfirmation } from "../../layouts/DeleteConfirmation";
-import EditingModal from "../../layouts/EditingModal";
-import { Products } from "./Dashboards/Products";
-import { AddProduct } from "./Dashboards/AddProduct";
-import { Blogs } from "./Dashboards/Blogs";
-import { Appointments } from "./Dashboards/Appointments";
-import { Reviews } from "./Dashboards/Reviews";
-import Settings from "./Dashboards/Settings";
-import NewPost from "./Dashboards/NewPost";
+import { Notifications } from "../../layouts/Notifications"
+import { DeleteConfirmation } from "../../layouts/DeleteConfirmation"
+import EditingModal from "../../layouts/EditingModal"
+import { Products } from "./Dashboards/Products"
+import { AddProduct } from "./Dashboards/AddProduct"
+import { Blogs } from "./Dashboards/Blogs"
+import { Appointments } from "./Dashboards/Appointments"
+import { Reviews } from "./Dashboards/Reviews"
+import Settings from "./Dashboards/Settings"
+import NewPost from "./Dashboards/NewPost"
+import MyProfile from "./MyProfile"
 
 export const Board = () => {
   return (
@@ -57,16 +58,25 @@ export const Board = () => {
           path="settings"
           element={<Settings />}
         />
+        <Route
+          path="me"
+          element={<MyProfile />}
+        />
       </Routes>
     </div>
-  );
-};
+  )
+}
 
 export const Overview = () => {
-  const [allProducts, setAllProducts] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
+  const [allProducts, setAllProducts] = useState([])
+  const [allUsers, setAllUsers] = useState([])
+  const [allBlogs, setAllBlogs] = useState([])
 
-  const jwtToken = Cookie.get("jwt");
+  const [showNotifcation, setShowNotification] = useState(false)
+  const [status, setStatus] = useState("")
+  const navigate = useNavigate()
+
+  const jwtToken = Cookie.get("jwt")
 
   useEffect(() => {
     const getProducts = async () => {
@@ -78,35 +88,80 @@ export const Overview = () => {
               Authorization: `Bearer ${jwtToken}`,
             },
           }
-        );
+        )
 
-        const { data } = response.data;
+        const { data } = response.data
 
-        setAllProducts(data.products);
+        setAllProducts(data.products)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    };
+    }
 
     const getUsers = async () => {
       try {
         const response = await axios.get(
-          "https://techalive.onrender.com/api/v1/user/get-users"
-        );
+          "https://techalive.onrender.com/api/v1/user/get-users",
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        )
 
-        const { data } = response.data;
-        setAllUsers(data.getAllUsers);
+        const { data } = response.data
+        setAllUsers(data.getAllUsers)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    };
+    }
 
-    getProducts();
-    getUsers();
-  });
+    const getAllBlogs = async () => {
+      setShowNotification(true)
+      try {
+        const response = await axios.get(
+          "https://techalive.onrender.com/api/v1/blog-post/all-blogs",
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        )
+
+        const data = response.data
+
+        setAllBlogs(data.allBlogs)
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          setStatus("warning")
+          navigate("/login")
+        }
+
+        console.log(error)
+
+        !isOnline ? setStatus("offline") : null
+      }
+    }
+
+    getProducts()
+    getUsers()
+    getAllBlogs()
+
+    const interval = setInterval(() => {
+      setShowNotification(false)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [status])
 
   return (
     <div>
+      {showNotifcation && (
+        <Notifications
+          status={status}
+          showNotification={showNotifcation}
+        />
+      )}
       <h1 className="board-header">Overview</h1>
       <div className="dashboard-container">
         <div className="dashboard-wrapper">
@@ -132,7 +187,7 @@ export const Overview = () => {
           <div className="dashboard-content">
             <i className="pi pi-chart-bar dashboard-icon"></i>
             <h2 className="flex items-center justify-center h-full text-f25 ">
-              {allUsers.length}
+              {allBlogs.length}
             </h2>
           </div>
         </div>
@@ -155,29 +210,41 @@ export const Overview = () => {
           </div>
         </div>
       </div>
-      <div className="workers-container">
-        <h1>Workers</h1>
-        <p>Techalive consult ltd. workers </p>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
+      <table className="w-full flex flex-col items-center mt-10 gap-5">
+        <thead className="w-full">
+          <tr className="flex flex-row justify-between">
+            <th className="w-[50px] text-start"></th>
+            <th className="w-[50px] text-start">Image</th>
+            <th className="w-[100px] text-start">Name</th>
+            <th className="w-[50px] text-start">Email</th>
+            <th className="w-[50px] text-start">Role</th>
+          </tr>
+        </thead>
+
+        <tbody className="w-full">
+          {allUsers.map((user, index) => (
+            <tr
+              key={index}
+              className="flex flex-row items-center justify-between"
+            >
+              <td className="w-[50px] text-start mb-4">
+                <i className="pi pi-circle text-f10" />
+              </td>
+              <td className="w-[50px] text-start">
+                <img
+                  src={user.image}
+                  alt=""
+                  className="w-[40px] h-[40px] rounded-full"
+                />
+              </td>
+              <td className="w-[100px] text-start">{user.name}</td>
+              <td className="w-[50px] text-start">{user.email}</td>
+              <td className="w-[50px] text-start">{user.role}</td>
             </tr>
-          </thead>
-          <tbody>
-            {allUsers.map((user, index) => (
-              <tr key={index}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.role}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
-  );
-};
+  )
+}

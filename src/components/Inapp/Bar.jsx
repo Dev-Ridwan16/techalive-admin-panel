@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react"
+import { sidebar_links } from "../../../default-api"
+import { Link } from "react-router-dom"
+import { useSelector } from "react-redux"
 
-import "../../Style/Inapp.css";
-import { sidebar_links } from "../../../default-api";
-import { Link } from "react-router-dom";
-import axios from "axios";
-
-// export
+import "../../Style/Inapp.css"
+import ProfileCard from "../../layouts/ProfileCard"
 
 export const Sidebar = ({ handleLogout }) => {
-  const [active, setActive] = useState(null);
-  const isTablet = window.innerWidth <= 1023;
+  const [active, setActive] = useState(null)
+  const isTablet = window.innerWidth <= 1023
 
   const handleActive = function (index) {
-    setActive(index === active ? null : index);
-  };
+    setActive(index === active ? null : index)
+  }
 
   // Implemented logout handler in AdminPanel.jsx
 
@@ -59,10 +58,16 @@ export const Sidebar = ({ handleLogout }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const Headbar = () => {
+  const user = useSelector((state) => state.user)
+  const [showCard, setShowCard] = useState(false)
+
+  const handleShowCard = () => setShowCard(true)
+  const handleCloseCard = () => setShowCard(false)
+
   return (
     <div className="border-b h-[60px] flex items-center">
       <div className="flex flex-row items-center justify-between w-[95%] md:max-w-[550px] lg:max-w-[900px] mx-auto">
@@ -74,22 +79,35 @@ export const Headbar = () => {
           />
           <i className="pi pi-search absolute left-[100%] top-0 translate-x-[-200%] translate-y-[10px] text-gray-300" />
         </div>
-        <div className="flex items-center justify-between w-[100px]">
-          <i className="pi pi-user" />
-          <span>Ridwan</span>
+        <div
+          className="flex items-center justify-between w-[100px] cursor-pointer"
+          onClick={handleShowCard}
+        >
+          <img
+            src={user.image}
+            alt=""
+            className="w-[30px] h-[30px] rounded-full"
+          />
+          <span>{user.name}</span>
           <i className="pi pi-angle-down" />
         </div>
       </div>
+      {showCard && (
+        <ProfileCard
+          closeCard={handleCloseCard}
+          showCard={showCard}
+        />
+      )}
     </div>
-  );
-};
+  )
+}
 
 export const BottomNav = () => {
-  const [active, setActive] = useState(null);
+  const [active, setActive] = useState(null)
 
   const handleActive = function (index) {
-    setActive(index === active ? null : index);
-  };
+    setActive(index === active ? null : index)
+  }
 
   return (
     <div className="flex md:hidden items-end justify-end fixed w-full bottom-0">
@@ -107,8 +125,8 @@ export const BottomNav = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const LogoutModal = () => {
   return (
@@ -122,5 +140,5 @@ export const LogoutModal = () => {
         <i className="pi pi-spin pi-spinner" />
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,0 +1,11 @@
+.custom-shadow {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.profile-card {
+    @apply bg-[#fff] w-[250px] h-[200px] opacity-0 transition-all duration-1000 ease-in-out rounded-md p-3 absolute top-[10%] left-[95%] translate-x-[-95%]
+}
+
+.profile-card.card {
+    @apply opacity-100 transition-all duration-1000 ease-in-out
+}

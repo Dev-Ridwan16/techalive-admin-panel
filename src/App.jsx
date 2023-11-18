@@ -1,36 +1,37 @@
-import { useState } from "react";
+import { useState } from "react"
 // import { useParams } from "react-router-dom";
 
 // styles
-import "primeicons/primeicons.css";
-import "./App.css";
+import "primeicons/primeicons.css"
+import "./App.css"
 
 // Routes
-import { AccountForm } from "./components/AccountForm";
-import { Route, Routes } from "react-router-dom";
-import { AdminPanel } from "./components/Inapp/AdminPanel";
-import { AddProduct } from "./components/Inapp/Dashboards/AddProduct";
-import { Appointments } from "./components/Inapp/Dashboards/Appointments";
-import { Blogs } from "./components/Inapp/Dashboards/Blogs";
-import { Overview } from "./components/Inapp/Board";
-import { Products } from "./components/Inapp/Dashboards/Products";
-import { Reviews } from "./components/Inapp/Dashboards/Reviews";
-import Settings from "./components/Inapp/Dashboards/Settings";
-import { Notifications } from "./layouts/Notifications";
+import { AccountForm } from "./components/AccountForm"
+import { Route, Routes } from "react-router-dom"
+import { AdminPanel } from "./components/Inapp/AdminPanel"
+import { AddProduct } from "./components/Inapp/Dashboards/AddProduct"
+import { Appointments } from "./components/Inapp/Dashboards/Appointments"
+import { Blogs } from "./components/Inapp/Dashboards/Blogs"
+import { Overview } from "./components/Inapp/Board"
+import { Products } from "./components/Inapp/Dashboards/Products"
+import { Reviews } from "./components/Inapp/Dashboards/Reviews"
+import Settings from "./components/Inapp/Dashboards/Settings"
+import { Notifications } from "./layouts/Notifications"
 
-import { SignupComp } from "./components/AccountForm";
-import { LoginComp } from "./components/AccountForm";
-import NewPost from "./components/Inapp/Dashboards/NewPost";
-import BlogPost from "./layouts/BlogPost";
-import ReviewSite from "./layouts/ReviewSite";
+import { SignupComp } from "./components/AccountForm"
+import { LoginComp } from "./components/AccountForm"
+import NewPost from "./components/Inapp/Dashboards/NewPost"
+import BlogPost from "./layouts/BlogPost"
+import ReviewSite from "./layouts/ReviewSite"
+import MyProfile from "./components/Inapp/MyProfile"
 
 function App() {
   // const { postId } = useParams();
-  const [isToggle, setIsToggle] = useState(true);
+  const [isToggle, setIsToggle] = useState(true)
 
   const handleIsToggle = () => {
-    setIsToggle(!isToggle);
-  };
+    setIsToggle(!isToggle)
+  }
   return (
     <>
       <Notifications />
@@ -103,10 +104,14 @@ function App() {
             path="settings"
             element={<Settings />}
           />
+          <Route
+            path="me"
+            element={<MyProfile />}
+          />
         </Route>
       </Routes>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

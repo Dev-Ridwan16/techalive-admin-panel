@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Link, Route, Router, Routes, useNavigate } from "react-router-dom";
-import { Notifications } from "../layouts/Notifications";
-import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setError } from "../features/loadingSlice";
+import React, { useEffect, useState } from "react"
+import { Link, Route, Router, Routes, useNavigate } from "react-router-dom"
+import { Notifications } from "../layouts/Notifications"
+import { useDispatch, useSelector } from "react-redux"
+import { setLoading, setError } from "../features/loadingSlice"
+import { setUser, clearUser } from "../features/userSlice"
 
-import axios from "axios";
-import Cookies from "js-cookie";
-import Welcome_Illus from "../../public/welcome.svg";
+import axios from "axios"
+import Cookies from "js-cookie"
+import Welcome_Illus from "../../public/welcome.svg"
 
 // Style
-import "../Style/Account.css";
+import "../Style/Account.css"
 
 export const AccountForm = () => {
   return (
@@ -21,11 +22,11 @@ export const AccountForm = () => {
         ></Route>
       </Routes>
     </div>
-  );
-};
+  )
+}
 
 export const WelcomPage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
     <div className="w-screen h-screen bg-blue text-[#fff]">
@@ -57,36 +58,36 @@ export const WelcomPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const SignupComp = ({ isToggle, handleIsToggle }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const [userDetails, setUserDetails] = useState({
     name: "",
     email: "",
     password: "",
-  });
+  })
 
   const [fieldErrors, setFieldErrors] = useState({
     name: "",
     email: "",
     password: "",
-  });
+  })
 
-  const [status, setStatus] = useState("");
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showNotification, setShowNotification] = useState(false);
+  const [status, setStatus] = useState("")
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [showNotification, setShowNotification] = useState(false)
 
-  const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.loading);
+  const dispatch = useDispatch()
+  const { isLoading } = useSelector((state) => state.loading)
 
   // Handling user input change
   const handleUserDetailsChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
 
-    setUserDetails({ ...userDetails, [name]: value });
+    setUserDetails({ ...userDetails, [name]: value })
 
     setFieldErrors({
       ...fieldErrors,
@@ -94,100 +95,101 @@ export const SignupComp = ({ isToggle, handleIsToggle }) => {
         value === ""
           ? `${name.charAt(0).toUpperCase() + name.slice(1)} is required.`
           : "",
-    });
-  };
+    })
+  }
 
   // Check for connection
   useEffect(() => {
     const handleOnlineStatusChange = () => {
-      setIsOnline(true);
-    };
+      setIsOnline(true)
+    }
 
     const handleOfflineStatusChange = () => {
-      setIsOnline(false);
-    };
+      setIsOnline(false)
+    }
 
-    window.addEventListener("online", handleOnlineStatusChange);
-    window.addEventListener("offline", handleOfflineStatusChange);
+    window.addEventListener("online", handleOnlineStatusChange)
+    window.addEventListener("offline", handleOfflineStatusChange)
 
     return () => {
-      window.removeEventListener("online", handleOnlineStatusChange);
-      window.removeEventListener("offline", handleOfflineStatusChange);
-    };
-  });
+      window.removeEventListener("online", handleOnlineStatusChange)
+      window.removeEventListener("offline", handleOfflineStatusChange)
+    }
+  })
 
   const validateForm = () => {
-    const newErrors = {};
-    let isValid = true;
+    const newErrors = {}
+    let isValid = true
 
     Object.entries(userDetails).forEach(([fieldName, fieldValue]) => {
       if (fieldValue.trim() === "") {
         newErrors[fieldName] = `${
           fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-        } is required.`;
-        isValid = false;
+        } is required.`
+        isValid = false
       }
-    });
+    })
 
-    setFieldErrors(newErrors);
-    return isValid;
-  };
+    setFieldErrors(newErrors)
+    return isValid
+  }
 
   // Submiting user datas
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (validateForm()) {
-      dispatch(setLoading(true));
+      dispatch(setLoading(true))
 
       try {
         const response = await axios.post(
           "https://techalive.onrender.com/api/v1/user/signup",
           userDetails
-        );
+        )
         switch (response.status) {
           case 201:
-            setShowNotification(true);
-            setStatus("success");
-            dispatch(setLoading(false));
+            dispatch(setUser(response.data.user))
+            setShowNotification(true)
+            setStatus("success")
+            dispatch(setLoading(false))
             setTimeout(() => {
-              navigate("/admin-panel/overview");
-            }, 5000);
-            break;
+              navigate("/admin-panel/overview")
+            }, 5000)
+            break
           case 500:
-            setShowNotification(true);
-            setStatus("danger");
-            break;
+            setShowNotification(true)
+            setStatus("danger")
+            break
           default:
         }
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          setStatus("warning");
-          setShowNotification(true);
-          dispatch(setLoading(false));
-          dispatch(setError(true));
+          setStatus("warning")
+          setShowNotification(true)
+          dispatch(setLoading(false))
+          dispatch(setError(true))
         } else {
-          setStatus("danger");
-          !isOnline ? setStatus("offline") : null;
+          setStatus("danger")
+          !isOnline ? setStatus("offline") : null
 
-          setShowNotification(true);
-          dispatch(setLoading(false));
-          dispatch(setError(true));
+          setShowNotification(true)
+          dispatch(setLoading(false))
+          dispatch(setError(true))
         }
-        console.log(err);
+        console.log(err)
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setLoading(false))
       }
     }
-  };
+  }
 
   useEffect(() => {
     const interver = setInterval(() => {
-      setShowNotification(false);
-    }, 5000);
+      setShowNotification(false)
+    }, 5000)
 
-    return () => clearInterval(interver);
-  }, [status]);
+    return () => clearInterval(interver)
+  }, [status])
 
   return (
     <div className="acc-container">
@@ -270,31 +272,31 @@ export const SignupComp = ({ isToggle, handleIsToggle }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const LoginComp = ({ isToggle, handleIsToggle }) => {
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
-  });
+  })
 
   const [fieldErrors, setFieldErrors] = useState({
     email: "",
     password: "",
-  });
-  const [status, setStatus] = useState("");
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showNotification, setShowNotification] = useState(false);
-  const navigate = useNavigate();
+  })
+  const [status, setStatus] = useState("")
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [showNotification, setShowNotification] = useState(false)
+  const navigate = useNavigate()
 
-  const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.loading);
+  const dispatch = useDispatch()
+  const { isLoading } = useSelector((state) => state.loading)
 
   const handleLoginDetailsChange = function (event) {
-    const { name, value } = event.target;
+    const { name, value } = event.target
 
-    setLoginDetails({ ...loginDetails, [name]: value });
+    setLoginDetails({ ...loginDetails, [name]: value })
 
     setFieldErrors({
       ...fieldErrors,
@@ -302,105 +304,107 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
         value === ""
           ? `${name.charAt(0).toUpperCase() + name.slice(1)} is required.`
           : "",
-    });
-  };
+    })
+  }
 
   // Check connection
   useEffect(() => {
     const handleOnlineStatusChange = () => {
-      setIsOnline(true);
-    };
+      setIsOnline(true)
+    }
 
     const handleOfflineStatusChange = () => {
-      setIsOnline(false);
-    };
+      setIsOnline(false)
+    }
 
-    window.addEventListener("online", handleOnlineStatusChange);
-    window.addEventListener("offline", handleOfflineStatusChange);
+    window.addEventListener("online", handleOnlineStatusChange)
+    window.addEventListener("offline", handleOfflineStatusChange)
 
     return () => {
-      window.removeEventListener("online", handleOnlineStatusChange);
-      window.removeEventListener("offline", handleOfflineStatusChange);
-    };
-  });
+      window.removeEventListener("online", handleOnlineStatusChange)
+      window.removeEventListener("offline", handleOfflineStatusChange)
+    }
+  })
 
   const validateForm = () => {
-    const newErrors = {};
-    let isValid = true;
+    const newErrors = {}
+    let isValid = true
 
     Object.entries(loginDetails).forEach(([fieldName, fieldValue]) => {
       if (fieldValue.trim() === "") {
         newErrors[fieldName] = `${
           fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-        } is required.`;
-        isValid = false;
+        } is required.`
+        isValid = false
       }
-    });
+    })
 
-    setFieldErrors(newErrors);
-    return isValid;
-  };
+    setFieldErrors(newErrors)
+    return isValid
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (validateForm()) {
-      dispatch(setLoading(true));
+      dispatch(setLoading(true))
       try {
         const response = await axios.post(
           "https://techalive.onrender.com/api/v1/user/login",
           loginDetails
-        );
+        )
 
         switch (response.status) {
           case 200:
-            const jwtToken = response.data.token;
+            const jwtToken = response.data.token
 
-            Cookies.set("jwt", jwtToken);
+            Cookies.set("jwt", jwtToken)
 
             // console.log(jwtToken);
-            console.log(response);
-            setShowNotification(true);
-            setStatus("success");
-            dispatch(setLoading(false));
+            console.log(response)
+            dispatch(setUser(response.data.user))
+            console.log(response.data.user)
+            setShowNotification(true)
+            setStatus("success")
+            dispatch(setLoading(false))
             setTimeout(() => {
-              navigate("/admin-panel/overview");
-            }, 5000);
-            break;
+              navigate("/admin-panel/overview")
+            }, 5000)
+            break
           case 500:
-            setShowNotification(true);
-            setStatus("danger");
-            break;
+            setShowNotification(true)
+            setStatus("danger")
+            break
           default:
         }
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          setStatus("warning");
-          setShowNotification(true);
-          dispatch(setLoading(false));
-          dispatch(setError(true));
+          setStatus("warning")
+          setShowNotification(true)
+          dispatch(setLoading(false))
+          dispatch(setError(true))
         } else {
-          setStatus("danger");
-          !isOnline ? setStatus("offline") : null;
+          setStatus("danger")
+          !isOnline ? setStatus("offline") : null
 
-          setShowNotification(true);
-          dispatch(setLoading(false));
-          dispatch(setError(true));
+          setShowNotification(true)
+          dispatch(setLoading(false))
+          dispatch(setError(true))
         }
-        console.log(err);
+        console.log(err)
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setLoading(false))
       }
     }
-  };
+  }
 
   useEffect(() => {
     const interver = setInterval(() => {
-      setShowNotification(false);
-    }, 5000);
+      setShowNotification(false)
+    }, 5000)
 
-    return () => clearInterval(interver);
-  }, [status]);
+    return () => clearInterval(interver)
+  }, [status])
 
   return (
     <div className="acc-container">
@@ -475,5 +479,5 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
