@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Notifications } from "../../../layouts/Notifications";
-import AddImage from "../../../assets/add-image.png";
-import axios from "axios";
-import Cookie from "js-cookie";
+import React, { useState, useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
+import { Notifications } from "../../../layouts/Notifications"
+import AddImage from "../../../assets/add-image.png"
+import axios from "axios"
+import Cookie from "js-cookie"
 
 export const AddProduct = () => {
   const [productDetails, setProductDetails] = useState({
@@ -11,118 +11,118 @@ export const AddProduct = () => {
     price: "",
     category: "",
     description: "",
-  });
+  })
 
   const [fieldErrors, setFieldErrors] = useState({
     name: "",
     price: "",
     category: "",
     description: "",
-  });
+  })
 
-  const [status, setStatus] = useState("");
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showNotification, setShowNotification] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const fileInputRef = useRef(null);
-  const [selectedFileName, setSelectedFileName] = useState("");
-  const [filePreview, setFilePreview] = useState(null);
-  const navigate = useNavigate();
+  const [status, setStatus] = useState("")
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [showNotification, setShowNotification] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const fileInputRef = useRef(null)
+  const [selectedFileName, setSelectedFileName] = useState("")
+  const [filePreview, setFilePreview] = useState(null)
+  const navigate = useNavigate()
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
 
-    setProductDetails({ ...productDetails, [name]: value });
+    setProductDetails({ ...productDetails, [name]: value })
     setFieldErrors({
       ...fieldErrors,
       [name]:
         value === ""
           ? `${name.charAt(0).toUpperCase() + name.slice(1)} is required.`
           : "",
-    });
-  };
+    })
+  }
 
   const handleFileSelect = () => {
-    fileInputRef.current.click();
-  };
+    fileInputRef.current.click()
+  }
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
+    const selectedFile = e.target.files[0]
 
     if (selectedFile) {
-      setSelectedFileName(selectedFile.name);
+      setSelectedFileName(selectedFile.name)
 
       if (selectedFile.type.startsWith("image/")) {
-        const previewURL = URL.createObjectURL(selectedFile);
-        setFilePreview(previewURL);
+        const previewURL = URL.createObjectURL(selectedFile)
+        setFilePreview(previewURL)
       } else {
-        setFilePreview(null);
+        setFilePreview(null)
       }
     }
-  };
+  }
 
   const handleRemoveFile = () => {
-    setFilePreview(null);
-    setSelectedFileName("");
-    fileInputRef.current.value = "";
-  };
+    setFilePreview(null)
+    setSelectedFileName("")
+    fileInputRef.current.value = ""
+  }
 
   // Check connection
   useEffect(() => {
     const handleOnlineStatusChange = () => {
-      setIsOnline(true);
-    };
+      setIsOnline(true)
+    }
 
     const handleOfflineStatusChange = () => {
-      setIsOnline(false);
-    };
+      setIsOnline(false)
+    }
 
-    window.addEventListener("online", handleOnlineStatusChange);
-    window.addEventListener("offline", handleOfflineStatusChange);
+    window.addEventListener("online", handleOnlineStatusChange)
+    window.addEventListener("offline", handleOfflineStatusChange)
 
     return () => {
-      window.removeEventListener("online", handleOnlineStatusChange);
-      window.removeEventListener("offline", handleOfflineStatusChange);
-    };
-  });
+      window.removeEventListener("online", handleOnlineStatusChange)
+      window.removeEventListener("offline", handleOfflineStatusChange)
+    }
+  })
 
   const validateForm = function () {
-    const newErrors = {};
+    const newErrors = {}
 
-    let isValid = true;
+    let isValid = true
 
     Object.entries(productDetails).forEach(([fieldName, fieldValue]) => {
       if (fieldValue.trim() === "") {
         newErrors[fieldName] = `${
           fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-        } is required`;
-        isValid = false;
+        } is required`
+        isValid = false
       }
-    });
+    })
 
-    setFieldErrors(newErrors);
-    return isValid;
-  };
+    setFieldErrors(newErrors)
+    return isValid
+  }
 
-  const jwtToken = Cookie.get("jwt");
+  const jwtToken = Cookie.get("jwt")
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (validateForm()) {
-      setIsLoading(true);
+      setIsLoading(true)
 
-      const formData = new FormData();
+      const formData = new FormData()
 
       // Append the image file to the FormData
       if (fileInputRef.current.files[0]) {
-        formData.append("image", fileInputRef.current.files[0]);
+        formData.append("image", fileInputRef.current.files[0])
       }
 
       // Append other product details to the FormData
-      formData.append("name", productDetails.name);
-      formData.append("price", productDetails.price);
-      formData.append("category", productDetails.category);
-      formData.append("description", productDetails.description);
+      formData.append("name", productDetails.name)
+      formData.append("price", productDetails.price)
+      formData.append("category", productDetails.category)
+      formData.append("description", productDetails.description)
       try {
         const response = await axios.post(
           "https://techalive.onrender.com/api/v1/product/add-product",
@@ -133,55 +133,54 @@ export const AddProduct = () => {
               Authorization: `Bearer ${jwtToken}`,
             },
           }
-        );
+        )
 
         switch (response.status) {
           case 201:
-            setShowNotification(true);
-            setStatus("success");
-            setIsLoading(false);
+            setShowNotification(true)
+            setStatus("success")
+            setIsLoading(false)
             setProductDetails({
               name: "",
               price: "",
               category: "",
               description: "",
-            });
-            setFilePreview(null);
-            setSelectedFileName("");
-            fileInputRef.current.value = "";
-            break;
-          case 403:
+            })
+            setFilePreview(null)
+            setSelectedFileName("")
+            fileInputRef.current.value = ""
+            break
 
           default:
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          setStatus("warning");
-          setShowNotification(true);
-          setIsLoading(false);
-          navigate;
+          setStatus("warning")
+          setShowNotification(true)
+          setIsLoading(false)
+          navigate
         } else if (error.response && error.response.status === 403) {
-          setStatus("info");
-          setShowNotification(true);
-          console.log("forbid");
-          setIsLoading(false);
+          setStatus("info")
+          setShowNotification(true)
+          console.log("forbid")
+          setIsLoading(false)
         }
-        !isOnline ? setStatus("offline") : null;
-        setShowNotification(true);
-        setIsLoading(false);
+        !isOnline ? setStatus("offline") : null
+        setShowNotification(true)
+        setIsLoading(false)
       }
     } else {
-      setIsLoading(isLoading);
+      setIsLoading(isLoading)
     }
-  };
+  }
 
   useEffect(() => {
     const interval = setInterval(function () {
-      setShowNotification(false);
-    }, 5000);
+      setShowNotification(false)
+    }, 5000)
 
-    return () => clearInterval(interval);
-  }, [status]);
+    return () => clearInterval(interval)
+  }, [status])
   return (
     <div className="">
       {isLoading && (
@@ -345,5 +344,5 @@ export const AddProduct = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

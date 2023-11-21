@@ -5,23 +5,43 @@ import { setUser } from "../../features/userSlice"
 import Cookie from "js-cookie"
 import axios from "axios"
 import { Notifications, Warning } from "../../layouts/Notifications"
+import ChangePassSlide from "./Dashboards/ChangePassSlide"
 
 const MyProfile = () => {
   const jwtToken = Cookie.get("jwt")
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
-  const [isloading, setLoading] = useState(false)
+
   const [userDetails, setUserDetails] = useState({
     image: user.image,
     name: user.name,
     email: user.email,
   })
+  const [isloading, setLoading] = useState(false)
   const [editProfile, setEditProfile] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
+  const [changePassword, setChangePassword] = useState(false)
   const [previewImage, setPreviewImage] = useState(null)
   const [status, setStatus] = useState("")
   const imageRef = useRef()
+
+  /* Changa Password Variables */
+  const [passReset, setPassReset] = useState({
+    currentPassword: "",
+    password: "",
+  })
+  const [iconClick, setIconClick] = useState({
+    currentPassword: true,
+    password: true,
+  })
+
+  const [fieldError, setFieldError] = useState({
+    currentPassword: "",
+    password: "",
+  })
+
+  /* Changa Password Variables */
 
   const handleEditProfile = () => setEditProfile(true)
 
@@ -62,7 +82,7 @@ const MyProfile = () => {
 
     try {
       const response = await axios.patch(
-        `https://techalive.onrender.com/api/v1/user/${user._id}`,
+        `https://techalive.onrender.com/api/v1/user/updateMe`,
         formData,
         {
           headers: {
@@ -74,7 +94,7 @@ const MyProfile = () => {
 
       switch (response.status) {
         case 200:
-          Cookie.set("jwt", "")
+          Cookie.remove("jwt")
           dispatch(setUser(response.data.user))
           setShowNotification(true)
           setStatus("success")
@@ -87,7 +107,7 @@ const MyProfile = () => {
     } catch (error) {
       console.log(error)
 
-      if (error.response && error.response.status === 404) {
+      if (error.response && error.response.status === 401) {
         setShowNotification(true)
         setStatus("warning")
         setInterval(() => navigate("/login"), 5000)
@@ -103,6 +123,100 @@ const MyProfile = () => {
 
     return () => clearInterval(interval)
   }, [status])
+
+  /* Change Password Env Start */
+  const handleToggle = (fieldName) => {
+    setIconClick((prevIconClick) => ({
+      ...prevIconClick,
+      [fieldName]: !prevIconClick[fieldName],
+    }))
+  }
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target
+
+    setPassReset({ ...passReset, [name]: value })
+  }
+
+  let disable = false
+
+  const validateInput = () => {
+    let isValid = true
+
+    Object.entries(passReset).forEach(([fieldName, fieldValue]) => {
+      if (fieldValue.trim() === "") {
+        disable = true
+        isValid = false
+      }
+    })
+
+    return isValid
+  }
+
+  validateInput()
+
+  const handleUpdatePassword = async () => {
+    setFieldError({
+      currentPassword: "",
+      password: "",
+    })
+    setShowNotification(true)
+
+    setLoading(true)
+
+    try {
+      const response = await axios.patch(
+        "https://techalive.onrender.com/api/v1/user/updateMyPassword",
+        passReset,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      )
+
+      switch (response.status) {
+        case 200:
+          setStatus("success")
+
+          setLoading(false)
+
+          setInterval(() => {
+            navigate("/login")
+          }, 5000)
+          break
+
+        default:
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setStatus("warning")
+
+        setLoading(false)
+
+        setInterval(() => {
+          navigate("/login")
+        }, 5000)
+      } else if (error.response && error.response.status === 403) {
+        setLoading(false)
+
+        setFieldError({
+          ...fieldError,
+          currentPassword: "Incorrect Password!",
+        })
+        return
+      } else if (error.response && error.response.status === 400) {
+        setLoading(false)
+
+        setFieldError({
+          ...fieldError,
+          password: "You cannot use previous password!",
+        })
+        return
+      }
+    }
+  }
+  /* Change Password Env End */
 
   return (
     <div>
@@ -143,73 +257,114 @@ const MyProfile = () => {
           </div>
 
           <div className=" flex flex-col w-[80%] gap-5">
-            <div className="h-[250px]">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  id=""
-                  disabled={editProfile ? false : true}
-                  value={userDetails.name}
-                  onChange={handleProfileChange}
-                  className="border w-full md:w-[200px] h-[30px] px-2 rounded outline-none"
-                />
-              </div>
+            {changePassword ? (
+              <ChangePassSlide
+                passReset={passReset}
+                iconClick={iconClick}
+                handleInputChange={handleInputChange}
+                handleToggle={handleToggle}
+                fieldError={fieldError}
+              />
+            ) : (
+              <div className="h-[250px]">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    id=""
+                    disabled={editProfile ? false : true}
+                    value={userDetails.name}
+                    onChange={handleProfileChange}
+                    className="border w-full md:w-[200px] h-[30px] px-2 rounded outline-none"
+                  />
+                </div>
 
-              <div className="flex flex-col gap-2">
-                <label htmlFor="">Email</label>
-                <input
-                  type="text"
-                  name="email"
-                  id=""
-                  value={userDetails.email}
-                  onChange={handleProfileChange}
-                  disabled={editProfile ? false : true}
-                  className="border w-full md:w-[200px] h-[30px] px-2 rounded outline-none"
-                />
-              </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="">Email</label>
+                  <input
+                    type="text"
+                    name="email"
+                    id=""
+                    value={userDetails.email}
+                    onChange={handleProfileChange}
+                    disabled={editProfile ? false : true}
+                    className="border w-full md:w-[200px] h-[30px] px-2 rounded outline-none"
+                  />
+                </div>
 
-              <div className="flex flex-col gap-2">
-                <label htmlFor="">Role</label>
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  value={user.role}
-                  disabled
-                  className="border w-full md:w-[200px] h-[30px] px-2 rounded flex items-center"
-                />
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="">Role</label>
+                  <input
+                    type="text"
+                    name=""
+                    id=""
+                    value={user.role}
+                    disabled
+                    className="border w-full md:w-[200px] h-[30px] px-2 rounded flex items-center"
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex gap-3">
-              {editProfile ? (
+            {changePassword ? (
+              <div className="flex gap-3">
                 <button
-                  onClick={handleUpadateProfile}
-                  className="border border-green-500 text-green-500 w-[100px] h-[30px] flex gap-3 items-center justify-center"
+                  onClick={() => setChangePassword(false)}
+                  className="border border-[#999] text-[#999] w-[100px] h-[30px] flex gap-3 items-center justify-center"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleUpdatePassword}
+                  disabled={disable}
+                  className={`border border-indigo-500 text-indigo-500 
+                  w-[150px] h-[30px] flex gap-3 items-center justify-center
+                  ${disable && " opacity-50"}
+                  `}
                 >
                   {isloading ? (
-                    <span>
-                      Please wait <i className="pi pi-spin pi-spinner" />
-                    </span>
+                    "Updating password..."
                   ) : (
-                    "Save"
+                    <span>
+                      "Update Password"
+                      <i className="pi pi-send" />
+                    </span>
                   )}
                 </button>
-              ) : (
-                <button
-                  onClick={handleEditProfile}
-                  className="border border-green-500 text-green-500 w-[100px] h-[30px] flex gap-3 items-center justify-center"
-                >
-                  Edit Profile
-                </button>
-              )}
+              </div>
+            ) : (
+              <div className="flex gap-3">
+                {editProfile ? (
+                  <button
+                    onClick={handleUpadateProfile}
+                    className="border border-green-500 text-green-500 w-[100px] h-[30px] flex gap-3 items-center justify-center"
+                  >
+                    {isloading ? (
+                      <span>
+                        Please wait <i className="pi pi-spin pi-spinner" />
+                      </span>
+                    ) : (
+                      "Save"
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleEditProfile}
+                    className="border border-green-500 text-green-500 w-[100px] h-[30px] flex gap-3 items-center justify-center"
+                  >
+                    Edit Profile
+                  </button>
+                )}
 
-              <button className="border border-indigo-500 text-indigo-500 w-[150px] h-[30px] flex gap-3 items-center justify-center">
-                Change Password <i className="pi pi-key" />
-              </button>
-            </div>
+                <button
+                  onClick={() => setChangePassword(true)}
+                  className="border border-indigo-500 text-indigo-500 w-[150px] h-[30px] flex gap-3 items-center justify-center"
+                >
+                  Change Password <i className="pi pi-key" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
