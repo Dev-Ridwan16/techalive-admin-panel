@@ -14,6 +14,7 @@ import { Routes, Route, useNavigate } from "react-router-dom"
 
 import { useDispatch, useSelector } from "react-redux"
 import { setLoading } from "../../../features/loadingSlice"
+import { current } from "@reduxjs/toolkit"
 
 // Date formatter javascript function
 const formatDate = (dateString) => {
@@ -36,6 +37,7 @@ export const Products = function () {
   const [mLoad, setMLoad] = useState(false) //For auto refresh
   const [searchProduct, setSearchProduct] = useState("")
   const [productData, setProductData] = useState([])
+  const [currentProduct, setCurrentProduct] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedProductName, setSelectedProductName] = useState("")
   const [popup, setPopup] = useState(false)
@@ -67,8 +69,6 @@ export const Products = function () {
   // get all products
   useEffect(() => {
     const getProducts = async () => {
-      dispatch(setLoading(true))
-
       try {
         const response = await axios.get(
           "https://techalive.onrender.com/api/v1/product/all-products",
@@ -79,18 +79,8 @@ export const Products = function () {
           }
         )
 
-        const { data } = response.data
+        const data = response.data
         setProductData(data.products)
-
-        setDate()
-        switch (response.status) {
-          case 200:
-            dispatch(setLoading(false))
-            break
-          default:
-        }
-
-        setDate(newDate.toLocaleDateString("en-US", options))
       } catch (error) {
         if (error.response && error.response.status === 401) {
           setStatus("warning")
@@ -109,16 +99,16 @@ export const Products = function () {
       }
     }
 
-    // getProducts();
+    getProducts()
 
-    const interval = setInterval(
-      getProducts,
-      pollingInterval,
-      setShowNotification(false)
-    )
+    // const interval = setInterval(
+    //   getProducts,
+    //   pollingInterval,
+    //   setShowNotification(false)
+    // )
 
-    return () => clearInterval(interval)
-  }, [productData])
+    // return () => clearInterval(interval)
+  })
 
   const handleDeleteAll = async () => {
     setMLoad(true)
@@ -301,7 +291,7 @@ export const Products = function () {
                   <span className="text-f16">{productData.length}</span>
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <button
                   disabled={productData.length < 1 ? true : false}
                   onClick={() => setOpenConfirm(true)}
@@ -310,8 +300,52 @@ export const Products = function () {
                   <span>Delete All</span>
                   <i className="pi pi-trash"></i>
                 </button>
+              </div> */}
+
+              <div className="list-product-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 overflow-y-scroll lg:h-[400px] mt-5">
+                {productData
+                  .filter((product) =>
+                    searchProduct.toLowerCase() === ""
+                      ? product
+                      : product.name
+                          .toLowerCase()
+                          .includes(searchProduct.toLowerCase())
+                  )
+                  .map((product, index) => (
+                    <div
+                      key={index}
+                      className="listed-product h-[250px] border border-collapse border-[#afafaf23] p-[10px] relative"
+                    >
+                      <div className="lead-head relative mb-3">
+                        <div className="action-btns flex flex-row gap-3 absolute left-[97%] translate-x-[-97%] opacity-0 ease-in-out duration-500">
+                          <i
+                            onClick={() => handleEditProduct(product)}
+                            className="pi pi-pencil text-green-600"
+                          />
+                          <i
+                            onClick={() => handleDeleteConfirm(product)}
+                            className="pi pi-trash text-red"
+                          ></i>
+                        </div>
+                        <div>
+                          <h1>{product.name}</h1>
+                          <p>{product.category}</p>
+                        </div>
+                      </div>
+                      <img
+                        src={product.image}
+                        alt={`${product.name} image`}
+                        className="w-[80%] h-[150px] mx-auto"
+                      />
+                      <div className="flex flex-row justify-between mt-2">
+                        <p>{formatDate(product.date)}</p>
+                        <h1>{`$${product.price}`}</h1>
+                      </div>
+                    </div>
+                  ))}
               </div>
-              <table>
+
+              {/* <table>
                 <thead>
                   <tr>
                     <th>Image</th>
@@ -344,7 +378,6 @@ export const Products = function () {
                               src={product.image}
                               className="w-[60px] h-[60px]"
                             />
-                            {/* <img src={`${product.image}`} /> */}
                           </td>
                           <td>{product.name}</td>
                           <td>{product.category}</td>
@@ -376,7 +409,7 @@ export const Products = function () {
                       ))}
                   </tbody>
                 )}
-              </table>
+              </table> */}
             </div>
           ) : null}
           <Routes>

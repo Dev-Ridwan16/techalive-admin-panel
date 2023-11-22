@@ -321,11 +321,13 @@ export const AddProduct = () => {
                 )}
               </div>
               <div className="preview-details">
-                <h3 className=" font-bodyFamily text-f16 text-grey mt-2 font-wm">
+                <h3 className=" font-bodyFamily text-f16 text-grey mt-2 font-wm h-[10px]">
                   {productDetails.category}
                 </h3>
-                <h2 className="text-f16 mt-3">{productDetails.name}</h2>
-                <h3 className="text-pink text-f16 mt-3">
+                <h2 className="text-f16 mt-5 h-[10px]">
+                  {productDetails.name}
+                </h2>
+                <h3 className="text-pink text-f16 mt-5 h-[10px]">
                   {`${
                     productDetails.price === ""
                       ? ""
@@ -333,7 +335,7 @@ export const AddProduct = () => {
                   }`}
                 </h3>
                 <div
-                  className="mt-3 w-[400px] min-h-[150px] max-h-[150px] h-[150px] overflow-y-scroll border rounded-md"
+                  className="mt-5 w-[400px] min-h-[150px] max-h-[150px] h-[150px] overflow-y-scroll  rounded-md"
                   style={{ wordWrap: "break-word" }}
                 >
                   {productDetails.description}

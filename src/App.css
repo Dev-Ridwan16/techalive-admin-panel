@@ -9,3 +9,11 @@
 .profile-card.card {
     @apply opacity-100 transition-all duration-1000 ease-in-out
 }
+
+.list-product-container {
+    @apply grid grid-cols-5 overflow-y-scroll h-[400px] mt-5
+}
+
+.list-product-container .listed-product:hover .action-btns {
+    @apply  opacity-100 transition-all ease-in-out duration-500
+}

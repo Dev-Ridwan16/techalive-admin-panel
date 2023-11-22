@@ -90,7 +90,7 @@ export const Overview = () => {
           }
         )
 
-        const { data } = response.data
+        const data = response.data
 
         setAllProducts(data.products)
       } catch (error) {
