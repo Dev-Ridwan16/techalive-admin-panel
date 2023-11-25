@@ -19,6 +19,7 @@ import { Reviews } from "./Dashboards/Reviews"
 import Settings from "./Dashboards/Settings"
 import NewPost from "./Dashboards/NewPost"
 import MyProfile from "./MyProfile"
+import AnalogClock from "../../layouts/AnalogClock"
 
 export const Board = () => {
   return (
@@ -209,16 +210,19 @@ export const Overview = () => {
             </h2>
           </div>
         </div>
+        <div className="dashboard-wrapper">
+          <AnalogClock />
+        </div>
       </div>
 
-      <table className="w-full flex flex-col items-center mt-10 gap-5">
+      <table className="w-full flex flex-col mt-10 gap-5">
         <thead className="w-full">
-          <tr className="flex flex-row justify-between">
-            <th className="w-[50px] text-start"></th>
-            <th className="w-[50px] text-start">Image</th>
-            <th className="w-[100px] text-start">Name</th>
-            <th className="w-[50px] text-start">Email</th>
-            <th className="w-[50px] text-start">Role</th>
+          <tr className="grid grid-cols-6 place-items-start">
+            <th className="">Image</th>
+            <th className="">Name</th>
+            <th className="">Email</th>
+            <th className="">Phone Number</th>
+            <th className="">Role</th>
           </tr>
         </thead>
 
@@ -226,21 +230,23 @@ export const Overview = () => {
           {allUsers.map((user, index) => (
             <tr
               key={index}
-              className="flex flex-row items-center justify-between"
+              className="grid grid-cols-6 place-items-start mb-5"
             >
-              <td className="w-[50px] text-start mb-4">
-                <i className="pi pi-circle text-f10" />
-              </td>
-              <td className="w-[50px] text-start">
+              <td className="text-start flex items-center gap-3 ">
                 <img
                   src={user.image}
                   alt=""
                   className="w-[40px] h-[40px] rounded-full"
                 />
               </td>
-              <td className="w-[100px] text-start">{user.name}</td>
-              <td className="w-[50px] text-start">{user.email}</td>
-              <td className="w-[50px] text-start">{user.role}</td>
+              <td className="text-start">{user.name}</td>
+              <td className="text-start">{user.email}</td>
+              <td className="text-start">+234 704 7344 365</td>
+              <td className="text-start">{user.role}</td>
+              <td className="text-start">
+                <i className="pi pi-pencil" />
+                <i className="pi pi-trash" />
+              </td>
             </tr>
           ))}
         </tbody>

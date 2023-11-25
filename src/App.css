@@ -17,3 +17,7 @@
 .list-product-container .listed-product:hover .action-btns {
     @apply  opacity-100 transition-all ease-in-out duration-500
 }
+
+.clock {
+    @apply text-pink
+}

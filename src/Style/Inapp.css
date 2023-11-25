@@ -51,11 +51,12 @@
 }
 
 .dashboard-container {
-    @apply flex flex-row flex-wrap lg:justify-between gap-5
+    /* @apply flex flex-row flex-wrap lg:justify-between gap-5 */
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6
 }
 
 .dashboard-container .dashboard-wrapper {
-    @apply w-full md:w-[200px] h-[150px] md:h-[100px] px-5 py-3 rounded text-[#fff] flex flex-col justify-between
+    @apply w-full md:w-[200px] h-[150px] md:h-[100px] px-5 py-3 rounded border border-[#fff] text-[#fff] flex flex-col justify-between
 }
 
 .dashboard-container .dashboard-wrapper:nth-child(1) {
@@ -76,6 +77,10 @@
 
 .dashboard-container .dashboard-wrapper:nth-child(5) {
     @apply bg-gradient-to-tr from-[#276792] to-[#8cd9f7] 
+}
+
+.dashboard-container .dashboard-wrapper:nth-child(6) {
+    @apply bg-gradient-to-tr from-blue to-pink 
 }
 
 .dashboard-container .dashboard-content {
