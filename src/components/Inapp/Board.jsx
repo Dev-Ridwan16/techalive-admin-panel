@@ -4,6 +4,7 @@ import { overview_total } from "../../../default-api"
 
 import { useDispatch, useSelector } from "react-redux"
 import { setLoading } from "../../features/loadingSlice"
+import { setUser } from "../../features/userSlice"
 
 import axios from "axios"
 import Cookie from "js-cookie"
@@ -78,6 +79,15 @@ export const Overview = () => {
   const navigate = useNavigate()
 
   const jwtToken = Cookie.get("jwt")
+
+  const user = useSelector((state) => state.user)
+  let disable
+
+  if (user.role === "admin") {
+    disable = false
+  } else {
+    disable = true
+  }
 
   useEffect(() => {
     const getProducts = async () => {
@@ -154,7 +164,6 @@ export const Overview = () => {
 
     return () => clearInterval(interval)
   }, [status])
-
   return (
     <div>
       {showNotifcation && (
@@ -223,6 +232,7 @@ export const Overview = () => {
             <th className="">Email</th>
             <th className="">Phone Number</th>
             <th className="">Role</th>
+            <th className="">Action</th>
           </tr>
         </thead>
 
@@ -243,9 +253,21 @@ export const Overview = () => {
               <td className="text-start">{user.email}</td>
               <td className="text-start">+234 704 7344 365</td>
               <td className="text-start">{user.role}</td>
-              <td className="text-start">
-                <i className="pi pi-pencil" />
-                <i className="pi pi-trash" />
+              <td className="text-start w-[100px] flex gap-3">
+                <button disabled={disable}>
+                  <i
+                    className={`pi pi-pencil text-green-500 ${
+                      disable ? "opacity-20" : ""
+                    }`}
+                  />
+                </button>
+                <button disabled={disable}>
+                  <i
+                    className={`pi pi-trash text-rose-500 ${
+                      disable ? "opacity-20" : ""
+                    }`}
+                  />
+                </button>
               </td>
             </tr>
           ))}

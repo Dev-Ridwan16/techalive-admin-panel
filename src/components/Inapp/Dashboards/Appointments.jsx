@@ -1,7 +1,7 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import Cookie from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import axios from "axios"
+import React, { useEffect, useState } from "react"
+import Cookie from "js-cookie"
+import { useNavigate } from "react-router-dom"
 
 function formatDate(dateString) {
   const dateOptions = {
@@ -9,36 +9,36 @@ function formatDate(dateString) {
     month: "short",
     day: "numeric",
     weekday: "short",
-  };
+  }
 
-  return new Date(dateString).toLocaleDateString("en-Us", dateOptions);
+  return new Date(dateString).toLocaleDateString("en-Us", dateOptions)
 }
 
 function formatTime(time24Hour) {
-  const [hour, minute] = time24Hour.split(":");
+  const [hour, minute] = time24Hour.split(":")
 
-  const hr = parseInt(hour, 10);
+  const hr = parseInt(hour, 10)
 
-  const unit = hr >= 12 ? "PM" : "AM";
+  const unit = hr >= 12 ? "PM" : "AM"
 
-  const twelveHour = hr % 12 || 12;
+  const twelveHour = hr % 12 || 12
 
-  return `${twelveHour} : ${minute} (${unit})`;
+  return `${twelveHour} : ${minute} (${unit})`
 }
 
 export const Appointments = () => {
-  const [appointments, setAppointments] = useState([]);
-  const [readMessage, setReadMessage] = useState(-1);
-  const [isCheck, setIsCheck] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
-  const navigate = useNavigate();
+  const [appointments, setAppointments] = useState([])
+  const [readMessage, setReadMessage] = useState(-1)
+  const [isCheck, setIsCheck] = useState([])
+  const [searchValue, setSearchValue] = useState("")
+  const navigate = useNavigate()
 
-  const window_size = window.innerWidth <= 820;
+  const window_size = window.innerWidth <= 820
 
-  const jwtToken = Cookie.get("jwt");
+  const jwtToken = Cookie.get("jwt")
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         const response = await axios.get(
           "https://techalive.onrender.com/api/v1/appointment/all-appointment",
@@ -48,25 +48,25 @@ export const Appointments = () => {
               Authorization: `Bearer ${jwtToken}`,
             },
           }
-        );
+        )
 
-        const data = response.data;
+        const data = response.data
 
         const checkedStatus = data.appointments.map(
           (appointment) => appointment.checked || false
-        );
+        )
 
         // setIsCheck(new Array(data.appointments.length).fill(false));
-        setIsCheck(checkedStatus);
+        setIsCheck(checkedStatus)
 
-        setAppointments(data.appointments);
+        setAppointments(data.appointments)
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          navigate("/login");
+          navigate("/login")
         }
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   const deleteAppointment = async (id) => {
     try {
@@ -77,40 +77,41 @@ export const Appointments = () => {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      );
+      )
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const calculatePendingAppointmentDelay = (appointment) => {
-    const scheduleTime = new Date(`${appointment.date} ${appointment.time}`);
+    const scheduleTime = new Date(`${appointment.date} ${appointment.time}`)
 
-    const currentTime = new Date();
+    const currentTime = new Date()
 
-    const timeDifference = scheduleTime - currentTime;
+    const timeDifference = scheduleTime - currentTime
 
-    return timeDifference;
-  };
+    return timeDifference
+  }
 
   const scheduleAppointmentDeletion = (appointment, index) => {
     const delay = isCheck[index]
-      ? import.meta.env.REACT_APP_MARKED_APPOINTMENT_DELETE_TIME * 60 * 1000
-      : calculatePendingAppointmentDelay(appointment);
+      ? // ? import.meta.env.REACT_APP_MARKED_APPOINTMENT_DELETE_TIME * 60 * 1000
+        Date.now() + 30 * 60 * 1000
+      : calculatePendingAppointmentDelay(appointment)
 
     const timeout = setTimeout(() => {
-      deleteAppointment(appointment._id);
-    }, delay);
+      deleteAppointment(appointment._id)
+    }, delay)
 
-    return () => clearTimeout(timeout);
-  };
+    return () => clearTimeout(timeout)
+  }
 
   const handleCheck = async (index, appointment) => {
-    const newCheck = [...isCheck];
+    const newCheck = [...isCheck]
 
-    newCheck[index] = !newCheck[index];
+    newCheck[index] = !newCheck[index]
 
-    setIsCheck(newCheck);
+    setIsCheck(newCheck)
 
     try {
       await axios.patch(
@@ -124,16 +125,16 @@ export const Appointments = () => {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      );
+      )
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
 
-    if (newCheck[index]) scheduleAppointmentDeletion(appointment, index);
-  };
+    if (newCheck[index]) scheduleAppointmentDeletion(appointment, index)
+  }
 
-  const noOfPending = isCheck.filter((checked) => !checked).length;
-  const noOfMarked = isCheck.filter((checked) => checked).length;
+  const noOfPending = isCheck.filter((checked) => !checked).length
+  const noOfMarked = isCheck.filter((checked) => checked).length
 
   return (
     <div>
@@ -256,8 +257,8 @@ export const Appointments = () => {
         </table>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const AppointmentAnalytics = ({
   appointments,
@@ -279,5 +280,5 @@ export const AppointmentAnalytics = ({
         <h1>{noOfMarked}</h1>
       </div>
     </div>
-  );
-};
+  )
+}
