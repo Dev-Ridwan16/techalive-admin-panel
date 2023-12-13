@@ -1,29 +1,30 @@
-import { useState } from "react"
+import { useState } from 'react'
 // import { useParams } from "react-router-dom";
 
 // styles
-import "primeicons/primeicons.css"
-import "./App.css"
+import 'primeicons/primeicons.css'
+import './App.css'
 
 // Routes
-import { AccountForm } from "./components/AccountForm"
-import { Route, Routes } from "react-router-dom"
-import { AdminPanel } from "./components/Inapp/AdminPanel"
-import { AddProduct } from "./components/Inapp/Dashboards/AddProduct"
-import { Appointments } from "./components/Inapp/Dashboards/Appointments"
-import { Blogs } from "./components/Inapp/Dashboards/Blogs"
-import { Overview } from "./components/Inapp/Board"
-import { Products } from "./components/Inapp/Dashboards/Products"
-import { Reviews } from "./components/Inapp/Dashboards/Reviews"
-import Settings from "./components/Inapp/Dashboards/Settings"
-import { Notifications } from "./layouts/Notifications"
+import { AccountForm } from './components/AccountForm'
+import { Route, Routes } from 'react-router-dom'
+import { AdminPanel } from './components/Inapp/AdminPanel'
+import { AddProduct } from './components/Inapp/Dashboards/AddProduct'
+import { Appointments } from './components/Inapp/Dashboards/Appointments'
+import { Blogs } from './components/Inapp/Dashboards/Blogs'
+import { Overview } from './components/Inapp/Board'
+import { Products } from './components/Inapp/Dashboards/Products'
+import { Reviews } from './components/Inapp/Dashboards/Reviews'
+import Settings from './components/Inapp/Dashboards/Settings'
+import { Notifications } from './layouts/Notifications'
 
-import { SignupComp } from "./components/AccountForm"
-import { LoginComp } from "./components/AccountForm"
-import NewPost from "./components/Inapp/Dashboards/NewPost"
-import BlogPost from "./layouts/BlogPost"
-import ReviewSite from "./layouts/ReviewSite"
-import MyProfile from "./components/Inapp/MyProfile"
+import { SignupComp } from './components/AccountForm'
+import { LoginComp } from './components/AccountForm'
+import NewPost from './components/Inapp/Dashboards/NewPost'
+import BlogPost from './layouts/BlogPost'
+import ReviewSite from './layouts/ReviewSite'
+import MyProfile from './components/Inapp/MyProfile'
+import PasswordReset from './layouts/PasswordReset'
 
 function App() {
   // const { postId } = useParams();
@@ -37,15 +38,19 @@ function App() {
       <Notifications />
       <Routes>
         <Route
-          path="techalive/blog/:blogId"
+          path='techalive/blog/:blogId'
           element={<BlogPost />}
         />
         <Route
-          path="/"
+          path='api/v1/user/resetPassword'
+          element={<PasswordReset />}
+        />
+        <Route
+          path='/'
           element={<AccountForm />}
         />
         <Route
-          path="signup"
+          path='signup'
           element={
             <SignupComp
               isToggle={isToggle}
@@ -54,11 +59,11 @@ function App() {
           }
         />
         <Route
-          path="review"
+          path='review'
           element={<ReviewSite />}
         />
         <Route
-          path="login"
+          path='login'
           element={
             <LoginComp
               isToggle={isToggle}
@@ -67,45 +72,45 @@ function App() {
           }
         />
         <Route
-          path="admin-panel"
+          path='admin-panel'
           element={<AdminPanel />}
         >
           <Route
-            path="overview"
+            path='overview'
             element={<Overview />}
           />
           <Route
-            path="products"
+            path='products'
             element={<Products />}
           >
             <Route
-              path="add-new-product"
+              path='add-new-product'
               element={<AddProduct />}
             />
           </Route>
           <Route
-            path="blogs"
+            path='blogs'
             element={<Blogs />}
           >
             <Route
-              path="new-blog-post"
+              path='new-blog-post'
               element={<NewPost />}
             />
           </Route>
           <Route
-            path="appointments"
+            path='appointments'
             element={<Appointments />}
           />
           <Route
-            path="reviews"
+            path='reviews'
             element={<Reviews />}
           />
           <Route
-            path="settings"
+            path='settings'
             element={<Settings />}
           />
           <Route
-            path="me"
+            path='me'
             element={<MyProfile />}
           />
         </Route>
