@@ -1,8 +1,14 @@
-import React, { useState } from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Notifications } from './Notifications'
+import { useNavigate } from 'react-router-dom'
 
 const PasswordReset = () => {
   const [passwordReset, setPasswordReset] = useState('')
   const [isToggle, setIsToggle] = useState(false)
+  const [showNotification, setShowNotification] = useState(false)
+  const [status, setStatus] = useState('')
+  const navigate = useNavigate()
 
   const handlePasswordResetValue = (event) => {
     setPasswordReset(event.target.value)
@@ -12,8 +18,50 @@ const PasswordReset = () => {
     setIsToggle(!isToggle)
   }
 
+  const handlePasswordReset = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.patch(
+        `/api/v1/user/resetPassword/${window.location.pathname
+          .split('/')
+          .pop()}`,
+        {
+          password: passwordReset,
+        }
+      )
+
+      if (response.status === 200) {
+        setShowNotification(true)
+        setStatus('success')
+
+        setInterval(() => {
+          navigate('/login')
+        }, 5000)
+      }
+    } catch (error) {
+      if (error) {
+        setShowNotification(true)
+        setStatus('danger')
+      }
+    }
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowNotification(false)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [status])
+
   return (
     <div className='flex flex-col items-center justify-center h-[50vh] w-[400px]'>
+      <div className='float-right'>
+        <Notifications
+          status={status}
+          showNotification={showNotification}
+        />
+      </div>
       <img
         src='https://i.imgur.com/UKGl5Qk.png'
         alt=''
@@ -46,7 +94,10 @@ const PasswordReset = () => {
         password will be updated with one you provided
       </p>
 
-      <button className='bg-blue w-[200px] h-[30px] rounded mt-5'>
+      <button
+        onClick={handlePasswordReset}
+        className='bg-blue w-[200px] h-[30px] rounded mt-5'
+      >
         Reset Password
       </button>
     </div>
