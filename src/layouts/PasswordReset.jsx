@@ -38,6 +38,7 @@ const PasswordReset = ({ match }) => {
       if (error) {
         setShowNotification(true)
         setStatus('danger')
+        console.log(error)
       }
     }
   }
