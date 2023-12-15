@@ -22,9 +22,12 @@ const PasswordReset = () => {
   const handlePasswordReset = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`/api/v1/user/resetPassword/${token}`, {
-        password: passwordReset,
-      })
+      const response = await axios.post(
+        `https://techalive.onrender.com/api/v1/user/resetPassword/${token}`,
+        {
+          password: passwordReset,
+        }
+      )
 
       if (response.status === 200) {
         setShowNotification(true)
