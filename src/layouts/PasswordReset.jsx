@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Notifications } from './Notifications'
 import { useNavigate } from 'react-router-dom'
 
-const PasswordReset = () => {
+const PasswordReset = ({ match }) => {
   const [passwordReset, setPasswordReset] = useState('')
   const [isToggle, setIsToggle] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
@@ -21,13 +21,13 @@ const PasswordReset = () => {
   const handlePasswordReset = async (e) => {
     e.preventDefault()
     try {
+      const token = match.params.token
       const response = await axios.patch(
-        `/api/v1/user/resetPassword/${window.location.pathname
-          .split('/')
-          .pop()}`,
+        `/api/v1/user/resetPassword/${token}`,
         {
           password: passwordReset,
-        }
+        },
+        h
       )
 
       if (response.status === 200) {
