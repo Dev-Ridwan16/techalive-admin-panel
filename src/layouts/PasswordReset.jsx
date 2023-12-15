@@ -22,12 +22,9 @@ const PasswordReset = ({ match }) => {
     e.preventDefault()
     try {
       const token = match.params.token
-      const response = await axios.patch(
-        `/api/v1/user/resetPassword/${token}`,
-        {
-          password: passwordReset,
-        }
-      )
+      const response = await axios.post(`/api/v1/user/resetPassword/${token}`, {
+        password: passwordReset,
+      })
 
       if (response.status === 200) {
         setShowNotification(true)
