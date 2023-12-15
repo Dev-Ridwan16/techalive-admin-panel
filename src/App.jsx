@@ -42,7 +42,7 @@ function App() {
           element={<BlogPost />}
         />
         <Route
-          path='reset-password/:token'
+          path='/reset-password/:token'
           element={<PasswordReset />}
         />
         <Route
