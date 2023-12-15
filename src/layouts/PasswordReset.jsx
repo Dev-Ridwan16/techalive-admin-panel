@@ -1,14 +1,15 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Notifications } from './Notifications'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
-const PasswordReset = ({ match }) => {
+const PasswordReset = () => {
   const [passwordReset, setPasswordReset] = useState('')
   const [isToggle, setIsToggle] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
   const [status, setStatus] = useState('')
   const navigate = useNavigate()
+  const { token } = useParams()
 
   const handlePasswordResetValue = (event) => {
     setPasswordReset(event.target.value)
@@ -21,7 +22,6 @@ const PasswordReset = ({ match }) => {
   const handlePasswordReset = async (e) => {
     e.preventDefault()
     try {
-      const token = match.params.token
       const response = await axios.post(`/api/v1/user/resetPassword/${token}`, {
         password: passwordReset,
       })
