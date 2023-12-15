@@ -26,8 +26,7 @@ const PasswordReset = ({ match }) => {
         `/api/v1/user/resetPassword/${token}`,
         {
           password: passwordReset,
-        },
-        h
+        }
       )
 
       if (response.status === 200) {
