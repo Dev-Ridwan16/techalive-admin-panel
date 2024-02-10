@@ -1,147 +1,92 @@
-import React, { useState } from "react"
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import React, { useEffect, useState } from 'react'
+import { roles } from '../../../../default-api'
 
 export const Reviews = () => {
-  const [whatsappMessanger, setWhatsappMessanger] = useState({
-    PHONE_NUMBER: "",
-    WHATSAPP_MESSAGE: "",
-  })
+  const [reviews, setReviews] = useState([])
+  const jwtToken = Cookies.get('jwt')
 
-  const [fieldError, setFieldError] = useState({
-    PHONE_NUMBER: "",
-    WHATSAPP_MESSAGE: "",
-  })
+  useEffect(() => {
+    const getAllReviews = async () => {
+      const response = await axios.get(
+        'https://techalive.onrender.com/api/v1/review/get-review',
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      )
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-
-    setWhatsappMessanger({ ...whatsappMessanger, [name]: value })
-
-    setFieldError({
-      ...fieldError,
-      [name]:
-        value === ""
-          ? `${
-              name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
-            } is required`
-          : "",
-    })
-  }
-
-  const validateForm = () => {
-    const newError = {}
-
-    let isValid = true
-
-    Object.entries(whatsappMessanger).forEach(([fieldName, fieldValue]) => {
-      if (fieldValue.trim() === "") {
-        newError[fieldName] = `${
-          fieldName.charAt(0).toUpperCase() + fieldName.slice(1).toLowerCase()
-        } is required`
-      }
-      isValid = false
-    })
-
-    setFieldError(newError)
-
-    return isValid
-  }
-
-  const handleSendRequest = (e) => {
-    e.preventDefault()
-
-    if (!validateForm()) {
-      let number = whatsappMessanger.PHONE_NUMBER
-      let message = whatsappMessanger.WHATSAPP_MESSAGE
-
-      // const whatsappURL = `https://wa.me/${number}?text=${encodeURI(message)}`;
-      const whatsappURL = `https://api.whatsapp.com/send?phone=${number}&text=${message}`
-      const existingWhatsAppWindow = window.open(whatsappURL, "_blank")
-
-      if (existingWhatsAppWindow) {
-        // If an existing window was found, focus on it
-        existingWhatsAppWindow.focus()
-      } else {
-        // If no existing window was found, open a new one
-        window.open(whatsappURL, "_blank")
-      }
-      // console.log("opened");
+      const data = response.data
+      setReviews(data.review)
     }
+
+    getAllReviews()
+  }, [reviews])
+
+  const handleDeleteReview = async (review) => {
+    await axios.delete(
+      `https://techalive.onrender.com/api/v1/review/${review._id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    )
   }
-
-  const handleCopyToClipBoard = () => {
-    const inputElement = document.querySelector("#copyLink")
-
-    inputElement.select()
-
-    document.execCommand("copy")
-
-    inputElement.setSelectionRange(0, 0)
-
-    alert("Copied to Clipboard")
-  }
-
   return (
-    <div>
-      <h1 className="board-header"> Appointments</h1>
-
-      <section className="flex flex-col-reverse gap-5 md:gap-0 md:flex-row justify-between mt-10">
-        <form
-          action=""
-          className="shadow-md rounded md:w-[300px] lg:w-[400px] flex flex-col gap-5 p-5"
-          onSubmit={handleSendRequest}
-        >
-          <h1 className="text-green-500 text-f20">Send Review Request</h1>
-
-          <div className="flex flex-col">
-            <input
-              name="PHONE_NUMBER"
-              type="tel"
-              placeholder="Client Whatsapp Number"
-              value={whatsappMessanger.PHONE_NUMBER}
-              onChange={handleChange}
-              className="border outline-none h-[40px] px-3 rounded-md"
-            />
-            <p className="text-red text-f10 mt-1 h-[10px]">
-              {fieldError.PHONE_NUMBER}
-            </p>
-          </div>
-
-          <div className="flex flex-col">
-            <textarea
-              name="WHATSAPP_MESSAGE"
-              placeholder="Whatsapp Message"
-              value={whatsappMessanger.WHATSAPP_MESSAGE}
-              onChange={handleChange}
-              className="border outline-none min-h-[150px] max-h-[150px] p-3 rounded-md"
-            />
-            <p className="text-red text-f10 mt-1 h-[10px]">
-              {fieldError.WHATSAPP_MESSAGE}
-            </p>
-          </div>
-          <button
-            type="submit"
-            className="border border-green-500 text-green-500 w-[200px] h-[40px] mx-auto rounded-full flex items-center justify-center gap-3"
-          >
-            <i className="pi pi-whatsapp text-[16px]" />{" "}
-            <span>Send Request</span>
+    <div className='h-[510px] overflow-y-scroll'>
+      {/* <p>
+        {reviews.map((review, index) => (
+          <h1>{review.name}</h1>
+        ))} */}
+      <header className='max-w-[95%] mx-auto h-[70px] flex items-center'>
+        <div className='flex justify-between w-full'>
+          <button className=' bg-gray-100 h-[35px] w-[180px] rounded-md'>
+            Request a Testimonal +
           </button>
-        </form>
-
-        <div className=" md:w-[280px] lg:w-[400px]">
-          <div className="flex flex-row justify-between items-center border md:[250px] lg:w-[300px] h-[30px]">
-            <input
-              readOnly
-              id="copyLink"
-              value="techalive-inc.vercel.app/review/aehtlcvei"
-              className="pl-3 outline-none w-full"
-            />
-            <i
-              className="pi pi-copy bg-[#ddd] h-full w-[30px] grid place-content-center"
-              onClick={handleCopyToClipBoard}
-            />
-          </div>
+          <h4>No of Testimonials: {reviews.length}</h4>
         </div>
-      </section>
+      </header>
+
+      <main>
+        <div className='grid grid-cols-3 gap-3'>
+          {reviews.map((review, index) => (
+            <div
+              key={index}
+              className='border p-3 rounded relative'
+            >
+              <i
+                className='pi pi-trash absolute top-5 left-[95%] translate-x-[-95%] text-red cursor-pointer'
+                onClick={() => handleDeleteReview(review)}
+              />
+              <div className='flex gap-5 items-center'>
+                <div className='w-[50px] h-[50px] rounded-full bg-slate-300 grid place-items-center'>
+                  <h1>{review.name.charAt(0).toUpperCase()}</h1>
+                </div>
+                <div className='flex flex-col'>
+                  <h2>{review.name}</h2>
+                  <p>
+                    {roles.some(
+                      (role) =>
+                        role.full === review.role || role.short === review.role
+                    )
+                      ? review.role + ' @ ' + review.company
+                      : review.role === 'Founder' || 'co-founder'
+                      ? review.role + ' of ' + review.company
+                      : review.company}
+                  </p>
+                </div>
+              </div>
+
+              <div className='mt-5'>
+                <p className='leading-[25px]'>{review.testimonial}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   )
 }

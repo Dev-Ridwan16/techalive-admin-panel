@@ -32,7 +32,7 @@ export const WelcomPage = () => {
     <div className='w-screen h-screen bg-blue text-[#fff]'>
       <div className='flex flex-row h-full items-center justify-between w-[85%] mx-auto'>
         <div className='w-[42.5%] '>
-          <h1 className='text-white text-f35 mb-5'>Welocome Admin!</h1>
+          <h1 className='text-white text-f35 mb-5'>Welcome Admin!</h1>
           <p className='mb-5'>Techalive admin platform</p>
           <div className='flex flex-row gap-3 mt-10'>
             <button
