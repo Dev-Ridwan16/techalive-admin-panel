@@ -25,6 +25,7 @@ import BlogPost from './layouts/BlogPost'
 import ReviewSite from './layouts/ReviewSite'
 import MyProfile from './components/Inapp/MyProfile'
 import PasswordReset from './layouts/PasswordReset'
+import { RequestReview } from './components/Inapp/Dashboards/RequestReview'
 
 function App() {
   // const { postId } = useParams();
@@ -104,7 +105,12 @@ function App() {
           <Route
             path='reviews'
             element={<Reviews />}
-          />
+          >
+            <Route
+              path='new-testimonial'
+              element={<RequestReview />}
+            />
+          </Route>
           <Route
             path='settings'
             element={<Settings />}
