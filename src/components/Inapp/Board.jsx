@@ -22,6 +22,7 @@ import NewPost from './Dashboards/NewPost'
 import MyProfile from './MyProfile'
 import AnalogClock from '../../layouts/AnalogClock'
 import { RequestReview } from './Dashboards/RequestReview'
+import { EditUser } from '../../layouts/EditUser'
 
 export const Board = () => {
   return (
@@ -81,6 +82,8 @@ export const Overview = () => {
   const [allBlogs, setAllBlogs] = useState([])
 
   const [showNotifcation, setShowNotification] = useState(false)
+  const [editUser, setEditUser] = useState(false)
+  const [editUserDetails, setEditUserDetails] = useState(null)
   const [status, setStatus] = useState('')
   const navigate = useNavigate()
 
@@ -126,7 +129,7 @@ export const Overview = () => {
           }
         )
 
-        const { data } = response.data
+        const data = response.data
         setAllUsers(data.getAllUsers)
       } catch (error) {
         console.log(error)
@@ -170,12 +173,36 @@ export const Overview = () => {
 
     return () => clearInterval(interval)
   }, [status])
+
+  const handleEditUser = (user) => {
+    setEditUser(true)
+    setEditUserDetails(user)
+  }
+
+  const handleDeleteUser = async (user) => {
+    await axios.delete(
+      `https://techalive.onrender.com/api/v1/user/${user._id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    )
+
+    console.log(user.name)
+  }
   return (
     <div>
       {showNotifcation && (
         <Notifications
           status={status}
           showNotification={showNotifcation}
+        />
+      )}
+      {editUser && (
+        <EditUser
+          editUserDetails={editUserDetails}
+          setEditUser={setEditUser}
         />
       )}
       <h1 className='board-header'>Overview</h1>
@@ -259,22 +286,26 @@ export const Overview = () => {
               <td className='text-start'>{user.email}</td>
               <td className='text-start'>+234 704 7344 365</td>
               <td className='text-start'>{user.role}</td>
-              <td className='text-start w-[100px] flex gap-3'>
-                <button disabled={disable}>
-                  <i
-                    className={`pi pi-pencil text-green-500 ${
-                      disable ? 'opacity-20' : ''
-                    }`}
-                  />
-                </button>
-                <button disabled={disable}>
-                  <i
-                    className={`pi pi-trash text-rose-500 ${
-                      disable ? 'opacity-20' : ''
-                    }`}
-                  />
-                </button>
-              </td>
+              {user.role === 'admin' ? null : (
+                <td className='text-start w-[100px] flex gap-3'>
+                  <button disabled={disable}>
+                    <i
+                      onClick={() => handleEditUser(user)}
+                      className={`pi pi-pencil text-green-500 ${
+                        disable ? 'opacity-20' : ''
+                      }`}
+                    />
+                  </button>
+                  <button disabled={disable}>
+                    <i
+                      onClick={() => handleDeleteUser(user)}
+                      className={`pi pi-trash text-rose-500 ${
+                        disable ? 'opacity-20' : ''
+                      }`}
+                    />
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
