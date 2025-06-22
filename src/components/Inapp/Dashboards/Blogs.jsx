@@ -50,7 +50,7 @@ export const Blogs = () => {
       setShowNotification(true);
       try {
         const response = await axios.get(
-          "https://techalive.onrender.com/api/v1/blog-post/all-blogs",
+          "process.env.SERVER_URL/api/v1/blog-post/all-blogs",
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -85,7 +85,7 @@ export const Blogs = () => {
   const handleDeleteBlog = async (blog) => {
     try {
       await axios.delete(
-        `https://techalive.onrender.com/api/v1/blog-post/${blog}`,
+        `process.env.SERVER_URL/api/v1/blog-post/${blog}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
