@@ -82,7 +82,7 @@ const MyProfile = () => {
 
     try {
       const response = await axios.patch(
-        `https://techalive.onrender.com/api/v1/user/updateMe`,
+        `process.env.SERVER_URL/api/v1/user/updateMe`,
         formData,
         {
           headers: {
@@ -166,7 +166,7 @@ const MyProfile = () => {
 
     try {
       const response = await axios.patch(
-        "https://techalive.onrender.com/api/v1/user/updateMyPassword",
+        "process.env.SERVER_URL/api/v1/user/updateMyPassword",
         passReset,
         {
           headers: {
