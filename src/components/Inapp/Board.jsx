@@ -102,7 +102,7 @@ export const Overview = () => {
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          'https://techalive.onrender.com/api/v1/product/all-products',
+          'process.env.SERVER_URL/api/v1/product/all-products',
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
