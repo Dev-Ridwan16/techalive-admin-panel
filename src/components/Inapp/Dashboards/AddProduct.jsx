@@ -125,7 +125,7 @@ export const AddProduct = () => {
       formData.append('description', productDetails.description)
       try {
         const response = await axios.post(
-          'https://techalive.onrender.com/api/v1/product/add-product',
+          'process.env.SERVER_URL/api/v1/product/add-product',
           formData,
           {
             headers: {
