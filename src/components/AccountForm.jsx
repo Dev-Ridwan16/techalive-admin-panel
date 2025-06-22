@@ -350,7 +350,7 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
       dispatch(setLoading(true))
       try {
         const response = await axios.post(
-          'process.env.SERVER_URL/api/v1/user/login',
+          'https://techalive-backend-service.onrender.com/api/v1/user/login',
           loginDetails
         )
 
