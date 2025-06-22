@@ -71,7 +71,7 @@ export const Products = function () {
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          "https://techalive.onrender.com/api/v1/product/all-products",
+          "process.env.SERVER_URL/api/v1/product/all-products",
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -115,7 +115,7 @@ export const Products = function () {
 
     try {
       const result = await axios.delete(
-        "https://techalive.onrender.com/api/v1/product/delete-products",
+        "process.env.SERVER_URL/api/v1/product/delete-products",
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -195,7 +195,7 @@ export const Products = function () {
     setMLoad(true)
     try {
       const response = await axios.delete(
-        `https://techalive.onrender.com/api/v1/product/${product._id}`,
+        `process.env.SERVER_URL/api/v1/product/${product._id}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
