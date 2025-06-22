@@ -41,7 +41,7 @@ export const Appointments = () => {
     ;(async () => {
       try {
         const response = await axios.get(
-          "process.env.SERVER_URL/api/v1/appointment/all-appointment",
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/appointment/all-appointment`,
 
           {
             headers: {
@@ -71,7 +71,7 @@ export const Appointments = () => {
   const deleteAppointment = async (id) => {
     try {
       await axios.delete(
-        `process.env.SERVER_URL/api/v1/appointment/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/appointment/${id}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -115,7 +115,7 @@ export const Appointments = () => {
 
     try {
       await axios.patch(
-        `process.env.SERVER_URL/api/v1/appointment/${appointment._id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/appointment/${appointment._id}`,
         {
           checked: newCheck[index],
         },

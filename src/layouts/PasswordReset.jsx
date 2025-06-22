@@ -23,7 +23,7 @@ const PasswordReset = () => {
     e.preventDefault()
     try {
       const response = await axios.post(
-        `https://techalive.onrender.com/api/v1/user/resetPassword/${token}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/resetPassword/${token}`,
         {
           password: passwordReset,
         }

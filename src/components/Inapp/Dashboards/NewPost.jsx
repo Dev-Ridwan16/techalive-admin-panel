@@ -55,7 +55,7 @@ export default function NewPost({ editBlog, updateBtn }) {
     dispatch(setLoading(true));
     try {
       const response = await axios.post(
-        "process.env.SERVER_URL/api/v1/blog-post/create-new-blog",
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/blog-post/create-new-blog`,
         post,
 
         {
@@ -113,7 +113,7 @@ export default function NewPost({ editBlog, updateBtn }) {
     dispatch(setLoading(true));
     try {
       const response = await axios.patch(
-        `process.env.SERVER_URL/api/v1/blog-post/${editBlog._id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/blog-post/${editBlog._id}`,
         {
           ...editingBlog,
           blog: theBlog,

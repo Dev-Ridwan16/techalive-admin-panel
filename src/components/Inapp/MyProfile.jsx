@@ -82,7 +82,7 @@ const MyProfile = () => {
 
     try {
       const response = await axios.patch(
-        `process.env.SERVER_URL/api/v1/user/updateMe`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/updateMe`,
         formData,
         {
           headers: {
@@ -166,7 +166,7 @@ const MyProfile = () => {
 
     try {
       const response = await axios.patch(
-        "process.env.SERVER_URL/api/v1/user/updateMyPassword",
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/updateMyPassword`,
         passReset,
         {
           headers: {

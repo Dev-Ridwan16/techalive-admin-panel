@@ -102,7 +102,7 @@ export const Overview = () => {
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          'process.env.SERVER_URL/api/v1/product/all-products',
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/product/all-products`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -121,7 +121,7 @@ export const Overview = () => {
     const getUsers = async () => {
       try {
         const response = await axios.get(
-          'https://techalive.onrender.com/api/v1/user/get-users',
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/user/get-users`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -140,7 +140,7 @@ export const Overview = () => {
       setShowNotification(true)
       try {
         const response = await axios.get(
-          'https://techalive.onrender.com/api/v1/blog-post/all-blogs',
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/blog-post/all-blogs`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -181,7 +181,7 @@ export const Overview = () => {
 
   const handleDeleteUser = async (user) => {
     await axios.delete(
-      `https://techalive.onrender.com/api/v1/user/${user._id}`,
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/user/${user._id}`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,

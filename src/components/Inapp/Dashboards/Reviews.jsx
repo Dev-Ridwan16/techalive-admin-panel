@@ -13,7 +13,7 @@ export const Reviews = () => {
   useEffect(() => {
     const getAllReviews = async () => {
       const response = await axios.get(
-        'process.env.SERVER_URL/api/v1/review/get-review',
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/review/get-review`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -30,7 +30,7 @@ export const Reviews = () => {
 
   const handleDeleteReview = async (review) => {
     await axios.delete(
-      `process.env.SERVER_URL/api/v1/review/${review._id}`,
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/review/${review._id}`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,

@@ -22,7 +22,7 @@ export const EditUser = ({ editUserDetails, setEditUser }) => {
   const updateEditUser = async () => {
     if (user.role === 'admin') {
       const response = await axios.patch(
-        `https://techalive.onrender.com/api/v1/user/${details._id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/${details._id}`,
         details,
         {
           headers: {

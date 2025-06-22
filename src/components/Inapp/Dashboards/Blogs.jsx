@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Notifications } from "../../../layouts/Notifications";
 import NewPost from "./NewPost";
-import ReactQuill from "react-quill";
 import axios from "axios";
 import Cookie from "js-cookie";
 import "../../../Style/Inapp.css";
@@ -50,7 +49,7 @@ export const Blogs = () => {
       setShowNotification(true);
       try {
         const response = await axios.get(
-          "process.env.SERVER_URL/api/v1/blog-post/all-blogs",
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/blog-post/all-blogs`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -85,7 +84,7 @@ export const Blogs = () => {
   const handleDeleteBlog = async (blog) => {
     try {
       await axios.delete(
-        `process.env.SERVER_URL/api/v1/blog-post/${blog}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/blog-post/${blog}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,

@@ -14,7 +14,7 @@ export const AdminPanel = () => {
     setLogOutLoading(true);
     try {
       const response = await axios.get(
-        "process.env.SERVER_URL/api/v1/user/logout"
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/logout`
       );
 
       if (response.status === 200) {

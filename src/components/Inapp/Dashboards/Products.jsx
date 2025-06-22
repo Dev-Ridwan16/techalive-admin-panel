@@ -37,11 +37,9 @@ export const Products = function () {
   const [mLoad, setMLoad] = useState(false) //For auto refresh
   const [searchProduct, setSearchProduct] = useState("")
   const [productData, setProductData] = useState([])
-  const [currentProduct, setCurrentProduct] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedProductName, setSelectedProductName] = useState("")
   const [popup, setPopup] = useState(false)
-  const [pollingInterval, setPollingInterval] = useState(5000)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const { isLoading } = useSelector((state) => state.loading)
   const dispatch = useDispatch()
@@ -71,7 +69,7 @@ export const Products = function () {
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          "process.env.SERVER_URL/api/v1/product/all-products",
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/product/all-products`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -115,7 +113,7 @@ export const Products = function () {
 
     try {
       const result = await axios.delete(
-        "process.env.SERVER_URL/api/v1/product/delete-products",
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/product/delete-products`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -195,7 +193,7 @@ export const Products = function () {
     setMLoad(true)
     try {
       const response = await axios.delete(
-        `process.env.SERVER_URL/api/v1/product/${product._id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/product/${product._id}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -252,12 +250,7 @@ export const Products = function () {
                 showNotification={showNotification}
               />
               {openConfirm && (
-                // <DeleteConfirmation
-                //   handleDeleteAll={handleDeleteAll}
-                //   closeConfirm={closeConfirm}
-                //   mLoad={mLoad}
-                // />
-
+              
                 <DeleteSingleConfirmation
                   handleDeleteProduct={() => {
                     handleDeleteProduct(selectedProduct)
@@ -291,16 +284,6 @@ export const Products = function () {
                   <span className="text-f16">{productData.length}</span>
                 </div>
               </div>
-              {/* <div>
-                <button
-                  disabled={productData.length < 1 ? true : false}
-                  onClick={() => setOpenConfirm(true)}
-                  className="bg-red text-[#fff] w-[100px] h-[30px] mt-5 flex gap-2 items-center justify-center rounded"
-                >
-                  <span>Delete All</span>
-                  <i className="pi pi-trash"></i>
-                </button>
-              </div> */}
 
               <div className="list-product-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 overflow-y-scroll lg:h-[400px] mt-5">
                 {productData
@@ -345,71 +328,7 @@ export const Products = function () {
                   ))}
               </div>
 
-              {/* <table>
-                <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    {isTablet ? <th>Description</th> : null}
-                    <th>Date</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                {productData.length < 1 ? (
-                  <h1 className="text-center mt-10  text-f20">
-                    Found No Data!
-                  </h1>
-                ) : (
-                  <tbody>
-                    {productData
-                      .filter((product) =>
-                        searchProduct.toLowerCase() === ""
-                          ? product
-                          : product.name
-                              .toLowerCase()
-                              .includes(searchProduct.toLowerCase())
-                      )
-                      .map((product, index) => (
-                        <tr key={index}>
-                          <td>
-                            <img
-                              src={product.image}
-                              className="w-[60px] h-[60px]"
-                            />
-                          </td>
-                          <td>{product.name}</td>
-                          <td>{product.category}</td>
-                          <td>$ {product.price}</td>
-
-                          {isTablet ? (
-                            <td>
-                              {product.description.length > 10
-                                ? product.description.slice(0, 10) + "..."
-                                : product.description}
-                            </td>
-                          ) : null}
-
-                          <td>{formatDate(product.date)}</td>
-                          <td>
-                            <ul className="flex items-center justify-center gap-5">
-                              <li onClick={() => handleEditProduct(product)}>
-                                <i className="pi pi-pencil text-green-600"></i>
-                              </li>
-                              <li
-                                // onClick={() => handleDeleteProduct(product)}
-                                onClick={() => handleDeleteConfirm(product)}
-                              >
-                                <i className="pi pi-trash text-red"></i>
-                              </li>
-                            </ul>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                )}
-              </table> */}
+              
             </div>
           ) : null}
           <Routes>

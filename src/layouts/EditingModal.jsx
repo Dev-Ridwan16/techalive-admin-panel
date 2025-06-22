@@ -64,7 +64,7 @@ export default function EditingModal({
     formData.append("description", editForm.description)
     try {
       const response = await axios.patch(
-        `https://techalive.onrender.com/api/v1/product/${selectedProduct._id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/product/${selectedProduct._id}`,
         formData,
         {
           headers: {

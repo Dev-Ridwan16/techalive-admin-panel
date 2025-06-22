@@ -143,7 +143,7 @@ export const SignupComp = ({ isToggle, handleIsToggle }) => {
 
       try {
         const response = await axios.post(
-          'process.env.SERVER_URL/api/v1/user/signup',
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/user/signup`,
           userDetails
         )
         switch (response.status) {
@@ -350,7 +350,7 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
       dispatch(setLoading(true))
       try {
         const response = await axios.post(
-          'https://techalive-backend-service.onrender.com/api/v1/user/login',
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/user/login`,
           loginDetails
         )
 
@@ -402,7 +402,7 @@ export const LoginComp = ({ isToggle, handleIsToggle }) => {
   const handleForgotPassword = async () => {
     try {
       const response = await axios.post(
-        `process.env.SERVER_URL/api/v1/user/forgotPassword`,
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/forgotPassword`,
         { email: loginDetails.email }
       )
 
