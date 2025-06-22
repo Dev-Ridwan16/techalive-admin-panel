@@ -14,7 +14,7 @@ export const AdminPanel = () => {
     setLogOutLoading(true);
     try {
       const response = await axios.get(
-        "https://techalive.onrender.com/api/v1/user/logout"
+        "process.env.SERVER_URL/api/v1/user/logout"
       );
 
       if (response.status === 200) {
