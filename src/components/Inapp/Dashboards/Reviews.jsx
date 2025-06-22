@@ -13,7 +13,7 @@ export const Reviews = () => {
   useEffect(() => {
     const getAllReviews = async () => {
       const response = await axios.get(
-        'https://techalive.onrender.com/api/v1/review/get-review',
+        'process.env.SERVER_URL/api/v1/review/get-review',
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -30,7 +30,7 @@ export const Reviews = () => {
 
   const handleDeleteReview = async (review) => {
     await axios.delete(
-      `https://techalive.onrender.com/api/v1/review/${review._id}`,
+      `process.env.SERVER_URL/api/v1/review/${review._id}`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
